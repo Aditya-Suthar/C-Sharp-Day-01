@@ -1,7 +1,7 @@
  #include <stdio.h> 
 int main(void) 
 {   
-  //The question was regarding finding the gross salary,
+  // The question was regarding finding the gross salary,
   // if a fixed amount is spent on the existing salary,
   
   
