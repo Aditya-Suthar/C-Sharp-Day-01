@@ -7,7 +7,7 @@ int main (void)
 
 {
     int sp,cp,a;
-
+ 
     printf("Enter the Selling price and Cost Price of object respectively");
     scanf ("%d %d" ,&sp,&cp);
 
