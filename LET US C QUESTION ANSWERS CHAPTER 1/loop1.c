@@ -3,7 +3,8 @@ int main (void)
 {
     int a , b , c ;
 
-    {if (a>b && a>c)
+    {
+        if (a>b && a>c)
 
     printf ("A is the greatest number");
 
