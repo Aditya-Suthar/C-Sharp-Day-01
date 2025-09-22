@@ -9,7 +9,7 @@ int main ()
     scanf ("%d",&n);
 
     for (row=1;row<=n;row++){
-        for (col=1;col<=n;col++)
+        for (col=1;col<=row;col++)
         {
             i = i+1;
             printf ("%d",i);

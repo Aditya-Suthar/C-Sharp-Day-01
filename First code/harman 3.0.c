@@ -1,9 +1,8 @@
 # include <stdio.h>
 
 int main(){
-   float p = 34.1;
-   int r= 8;
-   int t= 5;
-   printf(" The value of simple intrest is %f ",(p*r*t)/100);
+   int length = 3;
+   int breadth = 6
+;  printf("the area of this rectangle is %d" length*breadth);
     return 0;
 }
