@@ -15,12 +15,14 @@
       position: relative;
     }
 
-    /* Navbar */
+    /* Navbar (hidden until login) */
     .navbar {
+      display: none;
       position: fixed;
-      top: 0; left: 0; right: 0;
+      top: 0;
+      left: 0;
+      right: 0;
       height: 60px;
-      display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0 20px;
@@ -35,8 +37,12 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
+    .nav-links {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
     .nav-links button {
-      margin: 0 8px;
       padding: 8px 16px;
       border: none;
       border-radius: 6px;
@@ -47,6 +53,10 @@
     }
     .nav-links button:hover {
       background: #f3f4f6;
+    }
+    .active-tab {
+      border-bottom: 2px solid #ec4899;
+      color: #ec4899;
     }
 
     /* Background Blobs */
@@ -77,11 +87,11 @@
     }
 
     /* Smooth fade/slide */
-    .hidden { display: none; }
+    .hidden { display: none !important; }
     .fade { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
     .fade.show { opacity: 1; transform: translateY(0); }
 
-    /* Sections need top padding (because of navbar) */
+    /* Sections padding */
     .hero, .login-section, .posts-section {
       padding-top: 80px;
     }
@@ -125,7 +135,7 @@
     /* Login Section */
     .login-section {
       min-height: 100vh;
-      display: flex;
+      display: none; /* hidden until "Get Started" */
       flex-direction: column;
       align-items: center;
       justify-content: center;
@@ -180,7 +190,6 @@
 
     .card {
       background: white;
-      color: #111827;
       max-width: 400px;
       width: 100%;
       padding: 24px;
@@ -204,6 +213,7 @@
       max-width: 700px;
       margin: 40px auto;
       padding: 0 16px;
+      display: none;
     }
     .post-form-card, .post-card {
       background: #ffffff;
@@ -217,7 +227,6 @@
     .post-card .body { font-size: 1rem; line-height: 1.5; margin-bottom: 8px; }
     .post-meta { font-size: 0.85rem; color: #6b7280; }
 
-    /* Footer */
     footer {
       text-align: center;
       font-size: 0.8rem;
@@ -231,9 +240,8 @@
   <nav class="navbar">
     <div class="nav-logo">NAD</div>
     <div class="nav-links">
-      <button onclick="showTab('hero')">Home</button>
-      <button onclick="showTab('loginSection')">Login</button>
-      <button onclick="showTab('postsSection')">Posts</button>
+      <button onclick="showTab('hero')" id="homeTab">Home</button>
+      <button onclick="showTab('postsSection')" id="postsTab">Posts</button>
       <button id="logoutBtn" class="hidden">Logout</button>
     </div>
   </nav>
@@ -249,50 +257,46 @@
   </div>
 
   <!-- Hero -->
-  <div class="hero fade show" id="hero">
+  <div class="hero" id="hero">
     <h1>NAD</h1>
     <p>Don’t be sad, just use NAD</p>
-    <button onclick="showTab('loginSection')">Get Started</button>
+    <button onclick="enterApp()">Get Started</button>
   </div>
 
   <!-- Login -->
-  <div class="login-section fade hidden" id="loginSection">
+  <div class="login-section" id="loginSection">
     <h2 id="typewriter"></h2>
-    <div class="auth-choice" id="authChoiceCard">
+    <div id="authChoiceCard">
       <button class="btn primary" onclick="showLogin()">Sign In</button>
       <button class="btn alt" onclick="showSignup()">Sign Up</button>
     </div>
 
-    <!-- Login Card -->
     <div class="card hidden" id="loginCard">
       <p>Sign in with</p>
       <div class="social-buttons">
         <button id="googleLogin" class="btn google">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
-          Google
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"> Google
         </button>
         <button id="appleLogin" class="btn apple"> Sign in with Apple</button>
       </div>
-      <p style="margin:12px 0;">or with email</p>
+      <p>or with email</p>
       <form id="loginForm">
         <input type="email" id="loginEmail" placeholder="Email" required />
         <input type="password" id="loginPassword" placeholder="Password" required />
         <button type="submit" class="btn primary">Login</button>
       </form>
-      <button id="resendVerification" class="btn alt hidden" style="margin-top:12px;">Resend Verification Email</button>
+      <button id="resendVerification" class="btn alt hidden">Resend Verification Email</button>
     </div>
 
-    <!-- Signup Card -->
     <div class="card hidden" id="signupCard">
       <p>Sign up with</p>
       <div class="social-buttons">
         <button id="googleSignup" class="btn google">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
-          Google
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"> Google
         </button>
         <button id="appleSignup" class="btn apple"> Sign up with Apple</button>
       </div>
-      <p style="margin:12px 0;">or with email</p>
+      <p>or with email</p>
       <form id="signupForm">
         <input type="email" id="signupEmail" placeholder="Email" required />
         <input type="password" id="signupPassword" placeholder="Password" required />
@@ -301,13 +305,13 @@
     </div>
   </div>
 
-  <!-- Posts Section -->
-  <div class="posts-section hidden" id="postsSection">
+  <!-- Posts -->
+  <div class="posts-section" id="postsSection">
     <div class="post-form-card">
       <form id="postForm">
         <input id="title" maxlength="120" placeholder="Post title" />
         <textarea id="body" maxlength="2000" placeholder="Write your thoughts..." style="width:100%;min-height:100px;"></textarea>
-        <button type="submit" class="btn primary" style="margin-top:10px;">Post</button>
+        <button type="submit" class="btn primary">Post</button>
         <p id="formMsg"></p>
       </form>
     </div>
@@ -316,13 +320,13 @@
 
   <footer>© 2025 NAD. All rights reserved.</footer>
 
-  <!-- Firebase SDKs -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // Firebase config (replace with yours)
+    // Firebase config
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
       authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -333,167 +337,117 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // Tab switching
-    function showTab(sectionId) {
-      const sections = ["hero", "loginSection", "postsSection"];
-      sections.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-          if (id === sectionId) {
-            el.classList.remove("hidden");
-            el.classList.add("show");
-          } else {
-            el.classList.add("hidden");
-            el.classList.remove("show");
-          }
-        }
-      });
+    // Show login after "Get Started"
+    function enterApp() {
+      document.getElementById("hero").style.display = "none";
+      document.getElementById("loginSection").style.display = "flex";
     }
 
-    function showLogin() {
-      document.getElementById("authChoiceCard").classList.add("hidden");
-      document.getElementById("loginCard").classList.remove("hidden");
+    // Switch tabs
+    function showTab(sectionId) {
+      ["hero","loginSection","postsSection"].forEach(id=>{
+        document.getElementById(id).style.display="none";
+      });
+      document.getElementById(sectionId).style.display="block";
+
+      document.getElementById("homeTab").classList.remove("active-tab");
+      document.getElementById("postsTab").classList.remove("active-tab");
+      if(sectionId==="hero"){document.getElementById("homeTab").classList.add("active-tab");}
+      if(sectionId==="postsSection"){document.getElementById("postsTab").classList.add("active-tab");}
     }
-    function showSignup() {
-      document.getElementById("authChoiceCard").classList.add("hidden");
-      document.getElementById("signupCard").classList.remove("hidden");
-    }
+
+    function showLogin(){ document.getElementById("authChoiceCard").classList.add("hidden"); document.getElementById("loginCard").classList.remove("hidden"); }
+    function showSignup(){ document.getElementById("authChoiceCard").classList.add("hidden"); document.getElementById("signupCard").classList.remove("hidden"); }
 
     // Typewriter effect
-    const lines = [
-      "✨ Don’t be sad, just use NAD 🌈",
-      "📝 Write freely, stay anonymous 🕊️",
-      "💭 Your thoughts, your safe space 🔒",
-      "🚀 Blogging reborn for Gen Z 🔥"
-    ];
-    let lineIndex = 0, charIndex = 0, isDeleting = false;
-    const speed = 70, delayBetween = 1500;
-    function typeWriter() {
-      const currentLine = lines[lineIndex];
-      const display = document.getElementById("typewriter");
-      if (!display) return;
-      if (!isDeleting) {
-        display.textContent = currentLine.substring(0, charIndex++);
-        if (charIndex > currentLine.length) { isDeleting = true; setTimeout(typeWriter, delayBetween); return; }
-      } else {
-        display.textContent = currentLine.substring(0, charIndex--);
-        if (charIndex < 0) { isDeleting = false; lineIndex = (lineIndex + 1) % lines.length; }
-      }
-      setTimeout(typeWriter, speed);
+    const lines = ["✨ Don’t be sad, just use NAD 🌈","📝 Write freely, stay anonymous 🕊️","💭 Your thoughts, your safe space 🔒","🚀 Blogging reborn for Gen Z 🔥"];
+    let lineIndex=0, charIndex=0, isDeleting=false;
+    const speed=70, delayBetween=1500;
+    function typeWriter(){
+      const currentLine=lines[lineIndex]; const display=document.getElementById("typewriter");
+      if(!display) return;
+      if(!isDeleting){ display.textContent=currentLine.substring(0,charIndex++); if(charIndex>currentLine.length){ isDeleting=true; setTimeout(typeWriter,delayBetween); return; } }
+      else{ display.textContent=currentLine.substring(0,charIndex--); if(charIndex<0){ isDeleting=false; lineIndex=(lineIndex+1)%lines.length; } }
+      setTimeout(typeWriter,speed);
     }
-    window.onload = typeWriter;
+    window.onload=typeWriter;
 
-    // Google Login
-    const googleProvider = new firebase.auth.GoogleAuthProvider();
-    document.getElementById("googleLogin").addEventListener("click", () => auth.signInWithPopup(googleProvider));
-    document.getElementById("googleSignup").addEventListener("click", () => auth.signInWithPopup(googleProvider));
+    // Providers
+    const googleProvider=new firebase.auth.GoogleAuthProvider();
+    const appleProvider=new firebase.auth.OAuthProvider('apple.com');
+    document.getElementById("googleLogin").onclick=()=>auth.signInWithPopup(googleProvider);
+    document.getElementById("googleSignup").onclick=()=>auth.signInWithPopup(googleProvider);
+    document.getElementById("appleLogin").onclick=()=>auth.signInWithPopup(appleProvider);
+    document.getElementById("appleSignup").onclick=()=>auth.signInWithPopup(appleProvider);
 
-    // Apple Login
-    const appleProvider = new firebase.auth.OAuthProvider('apple.com');
-    document.getElementById("appleLogin").addEventListener("click", () => auth.signInWithPopup(appleProvider));
-    document.getElementById("appleSignup").addEventListener("click", () => auth.signInWithPopup(appleProvider));
-
-    // Email Login
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    // Email login
+    document.getElementById("loginForm").onsubmit=async e=>{
       e.preventDefault();
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
-      try { await auth.signInWithEmailAndPassword(email, password); }
-      catch (err) { alert(err.message); }
-    });
-
-    // Email Signup with Verification
-    document.getElementById("signupForm").addEventListener("submit", async (e) => {
+      try{await auth.signInWithEmailAndPassword(
+        document.getElementById("loginEmail").value,
+        document.getElementById("loginPassword").value
+      );}catch(err){alert(err.message);}
+    };
+    // Email signup
+    document.getElementById("signupForm").onsubmit=async e=>{
       e.preventDefault();
-      const email = document.getElementById("signupEmail").value;
-      const password = document.getElementById("signupPassword").value;
-      try {
-        const result = await auth.createUserWithEmailAndPassword(email, password);
-        await result.user.sendEmailVerification();
-        alert("Verification email sent! Please check your inbox.");
-      } catch (err) { alert(err.message); }
-    });
+      try{
+        const res=await auth.createUserWithEmailAndPassword(
+          document.getElementById("signupEmail").value,
+          document.getElementById("signupPassword").value
+        );
+        await res.user.sendEmailVerification();
+        alert("Verification email sent!");
+      }catch(err){alert(err.message);}
+    };
 
     // Resend verification
-    const resendBtn = document.getElementById("resendVerification");
-    resendBtn.addEventListener("click", async () => {
-      const user = auth.currentUser;
-      if (user && !user.emailVerified) {
-        try {
-          await user.sendEmailVerification();
-          alert("Verification email resent!");
-        } catch (err) { alert("Could not resend. Try again later."); }
-      }
-    });
-
-    // Pen name
-    function getPenName(uid) {
-      const key = "penName-" + uid;
-      let v = localStorage.getItem(key);
-      if (!v) { v = `Writer#${Math.random().toString(16).slice(2, 6)}`; localStorage.setItem(key, v); }
-      return v;
-    }
+    document.getElementById("resendVerification").onclick=async ()=>{
+      const user=auth.currentUser;
+      if(user&&!user.emailVerified){ await user.sendEmailVerification(); alert("Verification email resent!"); }
+    };
 
     // Auth state
-    auth.onAuthStateChanged((user) => {
-      const logoutBtn = document.getElementById("logoutBtn");
-      if (user) {
-        if (!user.emailVerified && user.providerData[0]?.providerId === "password") {
-          resendBtn.classList.remove("hidden");
-          alert("Please verify your email before posting.");
-          auth.signOut();
-          return;
-        }
-        resendBtn.classList.add("hidden");
-        document.getElementById("loginSection").classList.add("hidden");
-        document.getElementById("postsSection").classList.remove("hidden");
-        logoutBtn.classList.remove("hidden");
-      } else {
-        resendBtn.classList.add("hidden");
-        document.getElementById("loginSection").classList.remove("hidden");
-        document.getElementById("postsSection").classList.add("hidden");
-        logoutBtn.classList.add("hidden");
+    auth.onAuthStateChanged(user=>{
+      const navbar=document.querySelector(".navbar"); const logoutBtn=document.getElementById("logoutBtn");
+      if(user){
+        if(!user.emailVerified&&user.providerData[0]?.providerId==="password"){ alert("Please verify email first."); auth.signOut(); return; }
+        document.getElementById("loginSection").style.display="none";
+        document.getElementById("hero").style.display="block";
+        document.getElementById("postsSection").style.display="block";
+        navbar.style.display="flex"; logoutBtn.classList.remove("hidden");
+        showTab("postsSection");
+      }else{
+        document.getElementById("hero").style.display="block";
+        document.getElementById("loginSection").style.display="none";
+        document.getElementById("postsSection").style.display="none";
+        navbar.style.display="none"; logoutBtn.classList.add("hidden");
       }
     });
+    document.getElementById("logoutBtn").onclick=()=>auth.signOut();
 
-    // Logout
-    document.getElementById("logoutBtn").addEventListener("click", () => auth.signOut());
-
-    // Post form
-    document.getElementById("postForm").addEventListener("submit", async (e) => {
+    // Posts
+    document.getElementById("postForm").onsubmit=async e=>{
       e.preventDefault();
-      const user = auth.currentUser;
-      const title = document.getElementById("title").value.trim();
-      const body = document.getElementById("body").value.trim();
-      const msgEl = document.getElementById("formMsg");
-      if (!title || !body) { msgEl.textContent = "Both fields required"; return; }
-      try {
-        await db.collection("posts").add({
-          title, body,
-          anonId: getPenName(user.uid),
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        msgEl.textContent = "Posted ✅";
-        document.getElementById("title").value = "";
-        document.getElementById("body").value = "";
-      } catch (err) { msgEl.textContent = "Failed ❌"; }
-    });
-
-    // Post feed
-    const postsEl = document.getElementById("posts");
-    db.collection("posts").orderBy("createdAt","desc").limit(20).onSnapshot((snap)=>{
-      postsEl.innerHTML = "";
-      if (snap.empty) postsEl.innerHTML = "<p>No posts yet, be the first!</p>";
+      const title=document.getElementById("title").value.trim();
+      const body=document.getElementById("body").value.trim();
+      if(!title||!body) return;
+      await db.collection("posts").add({
+        title,body,createdAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+      document.getElementById("title").value=""; document.getElementById("body").value="";
+    };
+    db.collection("posts").orderBy("createdAt","desc").limit(20).onSnapshot(snap=>{
+      const postsEl=document.getElementById("posts"); postsEl.innerHTML="";
+      if(snap.empty){postsEl.innerHTML="<p>No posts yet</p>";return;}
       snap.forEach(doc=>{
-        const d = doc.data();
-        const el = document.createElement("div");
-        el.className = "post-card";
-        el.innerHTML = `
-          <div class="title">${d.title}</div>
-          <div class="body">${d.body}</div>
-          <div class="post-meta">${d.anonId} • ${d.createdAt?.toDate().toLocaleString() || "just now"}</div>
-        `;
-        postsEl.appendChild(el);
+        const d=doc.data();
+        postsEl.innerHTML+=`
+          <div class="post-card">
+            <div class="title">${d.title}</div>
+            <div class="body">${d.body}</div>
+            <div class="post-meta">${d.createdAt?.toDate().toLocaleString()||"just now"}</div>
+          </div>`;
       });
     });
   </script>
