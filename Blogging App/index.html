@@ -4,250 +4,309 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>NAD — MVP</title>
+
+  <!-- ============================
+       GLOBAL STYLES
+  ============================= -->
   <style>
-    body {
-      font-family: 'Poppins', 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f3cfcf;
-      color: #111827;
-      overflow-x: hidden;
-      position: relative;
+    :root{
+      --pink:#ec4899;
+      --pink-d:#db2777;
+      --blue:#3b82f6;
+      --blue-d:#2563eb;
+      --ink:#111827;
+      --muted:#6b7280;
+      --card:#ffffff;
+      --bg1:#ffffff;
+      --bg2:#f0f4ff;
+      --bg3:#fef2f8;
+      --ring:0 0 0 3px rgba(59,130,246,.3);
+      --shadow-sm:0 2px 6px rgba(0,0,0,.08);
+      --shadow-md:0 6px 18px rgba(0,0,0,.12);
+      --shadow-lg:0 12px 30px rgba(0,0,0,.16);
+      --radius:16px;
     }
 
-    /* Navbar (hidden until login) */
-    .navbar {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 60px;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 20px;
-      background: white;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      z-index: 1000;
+    html{font-size:18px;}
+    *,*:before,*:after{box-sizing:border-box}
+    body{
+      margin:0; padding:0;
+      font-family:'Poppins','Segoe UI',sans-serif;
+      color:var(--ink);
+      background:linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3));
+      background-size:400% 400%;
+      animation:bgShift 28s ease infinite;
+      overflow-x:hidden;
+      min-height:100vh;
     }
-    .nav-logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-      background: linear-gradient(90deg, #ec4899, #3b82f6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .nav-links {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-    .nav-links button {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 6px;
-      background: none;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .nav-links button:hover {
-      background: #f3f4f6;
-    }
-    .active-tab {
-      border-bottom: 2px solid #ec4899;
-      color: #ec4899;
+    @keyframes bgShift{
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
     }
 
-    /* Background Blobs */
-    .bg-shapes {
-      position: fixed;
-      inset: 0;
-      overflow: hidden;
-      z-index: -1;
-    }
-    .blob {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(140px);
-      opacity: 0.65;
-      animation: orbit 40s linear infinite;
-      transform-origin: center;
-    }
-    .blob1 { width: 500px; height: 500px; background: #f472b6; top: 30%; left: -20%; animation-delay: 0s; }
-    .blob2 { width: 400px; height: 400px; background: #60a5fa; top: 60%; left: -15%; animation-delay: 10s; }
-    .blob3 { width: 350px; height: 350px; background: #f9a8d4; top: 40%; left: -10%; animation-delay: 20s; }
-    .blob4 { width: 500px; height: 500px; background: #3b82f6; top: 30%; right: -20%; animation-delay: 5s; }
-    .blob5 { width: 420px; height: 420px; background: #ec4899; top: 55%; right: -15%; animation-delay: 15s; }
-    .blob6 { width: 350px; height: 350px; background: #fbcfe8; top: 45%; right: -10%; animation-delay: 25s; }
+    /* Utility */
+    .hidden{display:none !important;}
+    .visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap;border:0;padding:0;margin:-1px}
+    .container{width:min(1100px,92vw);margin:0 auto}
 
-    @keyframes orbit {
-      0%   { transform: rotate(0deg) translateX(180px) rotate(0deg); }
-      100% { transform: rotate(360deg) translateX(180px) rotate(-360deg); }
+    /* Focus ring */
+    :focus-visible{outline:none; box-shadow:var(--ring); border-radius:10px}
+
+    /* ----------------------------
+       BACKGROUND BLOBS (ambient)
+    -----------------------------*/
+    .bg-shapes{position:fixed; inset:0; z-index:-1; overflow:hidden}
+    .blob{
+      position:absolute; border-radius:50%; filter:blur(140px); opacity:.55;
+      transform-origin:center;
+      animation:orbit 40s linear infinite;
     }
-
-    /* Smooth fade/slide */
-    .hidden { display: none !important; }
-    .fade { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
-    .fade.show { opacity: 1; transform: translateY(0); }
-
-    /* Sections padding */
-    .hero, .login-section, .posts-section {
-      padding-top: 80px;
+    .blob1{width:520px;height:520px;background:#f472b6;top:30%;left:-22%}
+    .blob2{width:420px;height:420px;background:#60a5fa;top:64%;left:-12%;animation-delay:10s}
+    .blob3{width:360px;height:360px;background:#f9a8d4;top:44%;left:-6%;animation-delay:20s}
+    .blob4{width:520px;height:520px;background:#3b82f6;top:26%;right:-20%;animation-delay:5s}
+    .blob5{width:440px;height:440px;background:#ec4899;top:56%;right:-12%;animation-delay:15s}
+    .blob6{width:360px;height:360px;background:#fbcfe8;top:46%;right:-6%;animation-delay:25s}
+    @keyframes orbit{
+      0%{transform:rotate(0deg) translateX(180px) rotate(0deg)}
+      100%{transform:rotate(360deg) translateX(180px) rotate(-360deg)}
     }
 
-    /* Hero Section */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 20px;
+    /* ----------------------------
+       NAVBAR (kept but hidden by default)
+    -----------------------------*/
+    .navbar{
+      display:none;
+      position:fixed; top:0; left:0; right:0; height:60px;
+      background:#fff; box-shadow:var(--shadow-sm); z-index:1000;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 20px;
     }
-    .hero h1 {
-      font-size: 4rem;
-      font-weight: 900;
-      background: linear-gradient(90deg, #ec4899, #3b82f6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 12px;
+    .nav-logo{
+      font-weight:900; font-size:1.4rem; letter-spacing:.3px;
+      background:linear-gradient(90deg,var(--pink),var(--blue));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
     }
-    .hero p {
-      font-size: 1.4rem;
-      color: #374151;
-      margin-bottom: 24px;
+    .nav-links{display:flex;gap:10px;align-items:center}
+    .nav-links button{
+      border:none; background:none; cursor:pointer;
+      font-weight:600; padding:8px 14px; border-radius:8px; transition:.2s;
     }
-    .hero button {
-      padding: 14px 28px;
-      border-radius: 999px;
-      border: none;
-      background: linear-gradient(90deg, #ec4899, #3b82f6);
-      color: white;
-      font-weight: bold;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .hero button:hover { transform: scale(1.05); }
+    .nav-links button:hover{background:#f3f4f6}
 
-    /* Login Section */
-    .login-section {
-      min-height: 100vh;
-      display: none; /* hidden until "Get Started" */
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      text-align: center;
+    /* ----------------------------
+       HERO
+    -----------------------------*/
+    .hero{
+      min-height:100vh;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      text-align:center; padding:20px;
     }
-    #typewriter {
-      font-size: 1.4rem;
-      font-weight: bold;
-      color: #ec4899;
-      margin-bottom: 30px;
-      min-height: 40px;
+    .hero h1{
+      font-size:clamp(2.6rem,6vw,4.2rem);
+      font-weight:900; line-height:1.05;
+      margin:0 0 10px 0;
+      background:linear-gradient(90deg,var(--pink),var(--blue));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
     }
-    .btn {
-      width: 240px;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      font-size: 1rem;
-      font-weight: bold;
-      transition: 0.2s;
+    .hero .subtitle{color:#374151; font-size:clamp(1.05rem,2.4vw,1.35rem); margin:0 0 26px}
+    .hero .cta{
+      border:none; cursor:pointer; border-radius:999px;
+      padding:14px 28px; font-weight:800; font-size:1.05rem; letter-spacing:.2px;
+      background:linear-gradient(90deg,var(--pink),var(--blue));
+      color:#fff; box-shadow:var(--shadow-md); transform:translateY(0);
+      transition:transform .18s ease, box-shadow .18s ease;
     }
-    .btn.primary { background: #ec4899; color: white; }
-    .btn.primary:hover { background: #db2777; }
-    .btn.alt { background: #3b82f6; color: white; }
-    .btn.google, .btn.apple {
-      background: white;
-      border: 1px solid #ddd;
-      color: #444;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-    .btn.apple { background: black; color: white; }
-    .btn.apple:hover { background: #333; }
-    .btn.google img, .btn.apple img { width: 18px; height: 18px; }
+    .hero .cta:hover{transform:translateY(-1px); box-shadow:var(--shadow-lg)}
+    .hero .cta:active{transform:translateY(0)}
 
-    .social-buttons {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      margin: 12px 0;
+    /* ----------------------------
+       LOGIN (SECOND PAGE)
+    -----------------------------*/
+    .login-section{
+      min-height:100vh; display:none;
+      flex-direction:column; align-items:center; justify-content:flex-start;
+      padding:60px 16px 40px; text-align:center;
     }
-    .social-buttons .btn {
-      width: 100%;
-      max-width: 260px;
+    #typewriter{
+      font-weight:900; letter-spacing:.2px;
+      font-size:clamp(1.05rem,2.3vw,1.25rem);
+      background:linear-gradient(90deg,var(--pink),var(--blue));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      margin:14px auto 18px; min-height:36px;
     }
 
-    .card {
-      background: white;
-      max-width: 400px;
-      width: 100%;
-      padding: 24px;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-      text-align: center;
-      margin: 20px auto;
+    /* Choice buttons (medium size as requested) */
+    .choices{display:flex; align-items:center; gap:12px; margin:8px auto 28px}
+    .btn{
+      border:none; cursor:pointer; border-radius:12px;
+      padding:11px 18px; font-weight:800; font-size:1rem; letter-spacing:.15px;
+      transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+      box-shadow:var(--shadow-sm);
     }
-    input {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 10px;
-      border: 1px solid #ddd;
-      outline: none;
-      font-size: 1rem;
+    .btn:active{transform:scale(.98)}
+    .btn.primary{background:var(--pink); color:#fff}
+    .btn.primary:hover{background:var(--pink-d)}
+    .btn.alt{background:var(--blue); color:#fff}
+    .btn.alt:hover{background:var(--blue-d)}
+    .btn.ghost{background:#fff; color:var(--ink); border:1px solid #e5e7eb}
+    .btn.ghost:hover{background:#f8fafc}
+
+    /* Auth cards */
+    .card{
+      width:min(420px,92vw); background:var(--card);
+      border-radius:var(--radius); box-shadow:var(--shadow-md);
+      padding:24px 22px; text-align:left; margin:0 auto 22px;
+      transform:translateY(0); transition:transform .2s ease;
+    }
+    .card:hover{transform:translateY(-1px)}
+    .card h3{margin:0 0 8px; font-size:1.2rem}
+    .card p.meta{margin:6px 0 18px; color:var(--muted); font-size:.95rem}
+
+    .social-buttons{display:flex; flex-direction:column; gap:10px; margin:8px 0 12px}
+    .btn.social{
+      width:100%; display:flex; align-items:center; justify-content:center;
+      gap:10px; background:#fff; border:1px solid #e5e7eb; color:#374151;
+    }
+    .btn.apple{background:#000; color:#fff; border-color:#000}
+    .btn.apple:hover{background:#222}
+    .social-buttons img{width:18px;height:18px}
+
+    .field{display:flex; flex-direction:column; gap:6px; margin:12px 0}
+    .label{font-weight:700; font-size:.9rem}
+    .input{
+      width:100%; padding:12px 12px; border-radius:12px;
+      border:1px solid #e5e7eb; font-size:1rem; font-family:inherit;
+      background:#fff;
+    }
+    .input:focus{box-shadow:var(--ring); outline:none}
+
+    .actions{display:flex; align-items:center; gap:12px; margin-top:10px}
+    .muted-link{color:var(--muted); font-size:.9rem; text-decoration:none}
+    .muted-link:hover{text-decoration:underline}
+
+    .small-note{font-size:.9rem; color:var(--muted); margin-top:6px}
+    .center{text-align:center}
+
+    /* Inline alerts / toasts */
+    .toast{
+      position:fixed; left:50%; transform:translateX(-50%);
+      bottom:22px; background:#111827; color:#fff; padding:10px 16px;
+      border-radius:999px; box-shadow:var(--shadow-md); font-weight:700;
+      font-size:.95rem; z-index:9999; opacity:0; pointer-events:none;
+      transition:opacity .2s ease, transform .2s ease;
+    }
+    .toast.show{opacity:1; transform:translateX(-50%) translateY(-4px)}
+    .toast.success{background:#065f46}
+    .toast.warn{background:#92400e}
+    .toast.info{background:#1f2937}
+
+    /* Inline spinner */
+    .spinner{display:inline-block;width:18px;height:18px;border:3px solid #e5e7eb;border-top-color:var(--blue);border-radius:50%;animation:spin .9s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* ----------------------------
+       DASHBOARD (AFTER LOGIN)
+    -----------------------------*/
+    #homePage{display:none}
+    .dashbar{
+      position:sticky; top:0; z-index:50; background:#fff;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:10px 12px; box-shadow:var(--shadow-sm);
+    }
+    .dash-left{
+      font-weight:900; font-size:1.2rem;
+      background:linear-gradient(90deg,var(--pink),var(--blue));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      letter-spacing:.3px;
+    }
+    .dash-center{display:flex; align-items:center; gap:14px; flex-wrap:wrap}
+    .dash-link{
+      border:none; background:none; cursor:pointer; font-weight:800;
+      padding:8px 10px; border-radius:10px; color:#374151; transition:.15s;
+    }
+    .dash-link:hover{background:#f3f4f6}
+    .dash-link.active{color:var(--pink); border-bottom:2px solid var(--pink)}
+    .search{display:flex; align-items:center}
+    .search input{
+      width:min(320px,70vw); padding:10px 14px; border-radius:999px; border:1px solid #e5e7eb;
+      font-size:.95rem; outline:none;
+    }
+    .dash-right{display:flex; align-items:center; gap:10px}
+    .avatar{
+      width:36px;height:36px;border-radius:50%; background:var(--pink); color:#fff;
+      display:flex; align-items:center; justify-content:center; font-weight:900;
     }
 
-    /* Posts Section */
-    .posts-section {
-      max-width: 700px;
-      margin: 40px auto;
-      padding: 0 16px;
-      display: none;
+    /* Layout: sidebar + content */
+    .layout{display:flex; gap:20px; padding:16px}
+    .sidebar{
+      position:sticky; top:72px; align-self:flex-start;
+      width:240px; background:#fff; border-radius:16px; box-shadow:var(--shadow-sm);
+      border:1px solid #f3f4f6; padding:16px;
+      max-height:calc(100vh - 90px); overflow:auto;
     }
-    .post-form-card, .post-card {
-      background: #ffffff;
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    .sidebar .sidebar-search input{
+      width:100%; padding:10px 14px; border-radius:999px; border:1px solid #e5e7eb; outline:none;
     }
-    .post-form-card { border-top: 4px solid #ec4899; }
-    .post-card .title { font-size: 1.2rem; font-weight: 600; margin-bottom: 6px; color: #ec4899; }
-    .post-card .body { font-size: 1rem; line-height: 1.5; margin-bottom: 8px; }
-    .post-meta { font-size: 0.85rem; color: #6b7280; }
+    .sidebar .heading{margin:12px 0 6px; font-weight:900; font-size:.95rem; color:#374151}
+    .sidebar-links{list-style:none;padding:0;margin:8px 0}
+    .sidebar-links li{
+      padding:9px 4px; font-weight:700; color:#374151; cursor:pointer; border-radius:8px;
+    }
+    .sidebar-links li:hover{color:var(--pink); background:#fdf2f8}
 
-    footer {
-      text-align: center;
-      font-size: 0.8rem;
-      color: #6b7280;
-      padding: 20px;
+    .home-wrap{flex:1}
+    .skeleton{
+      background:linear-gradient(90deg,#f3f4f6,#e5e7eb,#f3f4f6);
+      background-size:200% 100%; animation:shimmer 1.3s linear infinite;
+      border-radius:12px; height:14px; margin:8px 0;
+    }
+    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+    /* Post cards / form */
+    .post-form-card,.post-card{
+      background:#fff; border-radius:16px; padding:18px 16px; box-shadow:var(--shadow-sm); border:1px solid #f3f4f6;
+      margin-bottom:18px;
+    }
+    .post-form-card{border-top:4px solid var(--pink)}
+    .post-header{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px}
+    .post-header .title{font-weight:900; font-size:1.05rem}
+    .post-actions{display:flex; gap:10px; flex-wrap:wrap}
+    .post-input{width:100%; padding:12px 12px; border-radius:12px; border:1px solid #e5e7eb; font-family:inherit}
+
+    .post-card .title{color:var(--pink); font-weight:800; font-size:1.15rem; margin-bottom:6px}
+    .post-card .body{font-size:1rem; line-height:1.55; color:#1f2937}
+    .post-meta{font-size:.85rem; color:var(--muted); margin-top:6px}
+
+    /* Tabs content placeholder */
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+
+    /* Footer */
+    footer{padding:26px; color:var(--muted); text-align:center; font-size:.92rem}
+
+    /* ----------------------------
+       RESPONSIVE
+    -----------------------------*/
+    @media (max-width:1024px){
+      .layout{flex-direction:column}
+      .sidebar{position:static; width:100%; max-height:none}
+    }
+    @media (max-width:520px){
+      .choices{gap:8px}
+      .btn{padding:10px 14px}
+      .dash-center{gap:8px}
+      .search input{width:200px}
+      .post-actions{flex-direction:column; align-items:flex-start}
     }
   </style>
 </head>
 <body>
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="nav-logo">NAD</div>
-    <div class="nav-links">
-      <button onclick="showTab('hero')" id="homeTab">Home</button>
-      <button onclick="showTab('postsSection')" id="postsTab">Posts</button>
-      <button id="logoutBtn" class="hidden">Logout</button>
-    </div>
-  </nav>
 
-  <!-- Background blobs -->
-  <div class="bg-shapes">
+  <!-- Ambient blobs -->
+  <div class="bg-shapes" aria-hidden="true">
     <div class="blob blob1"></div>
     <div class="blob blob2"></div>
     <div class="blob blob3"></div>
@@ -256,198 +315,527 @@
     <div class="blob blob6"></div>
   </div>
 
-  <!-- Hero -->
-  <div class="hero" id="hero">
+  <!-- Optional top navbar (kept hidden by default but preserved) -->
+  <nav class="navbar" id="topNav">
+    <div class="nav-logo">NAD</div>
+    <div class="nav-links">
+      <button type="button" onclick="showTab('hero')">Home</button>
+      <button type="button" onclick="showTab('postsSection')">Posts</button>
+      <button id="logoutBtn" class="hidden" type="button">Logout</button>
+    </div>
+  </nav>
+
+  <!-- ============================
+       PAGE 1: HERO
+  ============================= -->
+  <section class="hero" id="hero">
     <h1>NAD</h1>
-    <p>Don’t be sad, just use NAD</p>
-    <button onclick="enterApp()">Get Started</button>
-  </div>
+    <p class="subtitle">Don’t be sad, just use NAD</p>
+    <button class="cta" type="button" onclick="enterApp()">Get Started</button>
+  </section>
 
-  <!-- Login -->
-  <div class="login-section" id="loginSection">
-    <h2 id="typewriter"></h2>
-    <div id="authChoiceCard">
-      <button class="btn primary" onclick="showLogin()">Sign In</button>
-      <button class="btn alt" onclick="showSignup()">Sign Up</button>
+  <!-- ============================
+       PAGE 2: LOGIN (typewriter + choice → form)
+  ============================= -->
+  <section class="login-section" id="loginSection" aria-labelledby="typewriter">
+    <h2 id="typewriter" aria-live="polite"></h2>
+
+    <!-- Choice buttons (medium sized, as requested) -->
+    <div class="choices" id="choiceButtons">
+      <button id="goSignIn" class="btn alt" type="button">Sign In</button>
+      <button id="goSignUp" class="btn primary" type="button">Sign Up</button>
     </div>
 
-    <div class="card hidden" id="loginCard">
-      <p>Sign in with</p>
+    <!-- Sign In Card -->
+    <div class="card hidden" id="loginCard" role="region" aria-label="Sign In">
+      <h3>Welcome back 👋</h3>
+      <p class="meta">Sign in with a provider</p>
+
       <div class="social-buttons">
-        <button id="googleLogin" class="btn google">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"> Google
+        <button id="googleLogin" class="btn social" type="button">
+          <img alt="" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"> Continue with Google
         </button>
-        <button id="appleLogin" class="btn apple"> Sign in with Apple</button>
+        <button id="appleLogin" class="btn social apple" type="button"> Continue with Apple</button>
       </div>
-      <p>or with email</p>
-      <form id="loginForm">
-        <input type="email" id="loginEmail" placeholder="Email" required />
-        <input type="password" id="loginPassword" placeholder="Password" required />
-        <button type="submit" class="btn primary">Login</button>
-      </form>
-      <button id="resendVerification" class="btn alt hidden">Resend Verification Email</button>
+
+      <p class="meta">Or use email</p>
+      <div class="field">
+        <label class="label" for="loginEmail">Email</label>
+        <input id="loginEmail" class="input" type="email" placeholder="you@example.com" required />
+      </div>
+      <div class="field">
+        <label class="label" for="loginPassword">Password</label>
+        <input id="loginPassword" class="input" type="password" placeholder="••••••••" required />
+      </div>
+      <div class="actions">
+        <button id="loginSubmit" class="btn primary" type="button">Login</button>
+        <a href="#" id="backToChoices1" class="muted-link">Back</a>
+      </div>
+      <div class="small-note">Trouble logging in? Try Google sign-in above.</div>
+      <button id="resendVerification" class="btn ghost hidden" type="button" style="margin-top:10px">Resend Verification Email</button>
     </div>
 
-    <div class="card hidden" id="signupCard">
-      <p>Sign up with</p>
+    <!-- Sign Up Card -->
+    <div class="card hidden" id="signupCard" role="region" aria-label="Sign Up">
+      <h3>Create your account 🚀</h3>
+      <p class="meta">Sign up with a provider</p>
+
       <div class="social-buttons">
-        <button id="googleSignup" class="btn google">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"> Google
+        <button id="googleSignup" class="btn social" type="button">
+          <img alt="" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"> Continue with Google
         </button>
-        <button id="appleSignup" class="btn apple"> Sign up with Apple</button>
+        <button id="appleSignup" class="btn social apple" type="button"> Continue with Apple</button>
       </div>
-      <p>or with email</p>
-      <form id="signupForm">
-        <input type="email" id="signupEmail" placeholder="Email" required />
-        <input type="password" id="signupPassword" placeholder="Password" required />
-        <button type="submit" class="btn primary">Create Account</button>
-      </form>
-    </div>
-  </div>
 
-  <!-- Posts -->
-  <div class="posts-section" id="postsSection">
-    <div class="post-form-card">
-      <form id="postForm">
-        <input id="title" maxlength="120" placeholder="Post title" />
-        <textarea id="body" maxlength="2000" placeholder="Write your thoughts..." style="width:100%;min-height:100px;"></textarea>
-        <button type="submit" class="btn primary">Post</button>
-        <p id="formMsg"></p>
-      </form>
+      <p class="meta">Or use email</p>
+      <div class="field">
+        <label class="label" for="signupEmail">Email</label>
+        <input id="signupEmail" class="input" type="email" placeholder="you@example.com" required />
+      </div>
+      <div class="field">
+        <label class="label" for="signupPassword">Password</label>
+        <input id="signupPassword" class="input" type="password" placeholder="Min 6 characters" required />
+      </div>
+      <div class="actions">
+        <button id="signupSubmit" class="btn primary" type="button">Create Account</button>
+        <a href="#" id="backToChoices2" class="muted-link">Back</a>
+      </div>
+      <div class="small-note">We’ll email you a verification link to activate your account.</div>
     </div>
-    <div id="posts"></div>
-  </div>
+  </section>
+
+  <!-- ============================
+       PAGE 3: APP (AFTER LOGIN)
+  ============================= -->
+  <section id="homePage" aria-label="App Home">
+    <div class="dashbar">
+      <div class="dash-left">NAD</div>
+      <div class="dash-center">
+        <button class="dash-link active" id="tabHome" type="button">HOME</button>
+        <button class="dash-link" id="tabTrending" type="button">TRENDING BLOGS</button>
+        <button class="dash-link" id="tabPins" type="button">YOUR PINS</button>
+        <button class="dash-link" id="tabContact" type="button">CONTACT</button>
+        <div class="search">
+          <input id="searchInput" placeholder="Search blogs which interest you!!" />
+        </div>
+      </div>
+      <div class="dash-right">
+        <div class="avatar" id="avatar">A</div>
+        <button id="hardLogout" class="btn ghost" type="button">Logout</button>
+      </div>
+    </div>
+
+    <div class="layout container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-search">
+          <input type="text" id="topicSearch" placeholder="🔍 Search trendy topics..." />
+        </div>
+        <div class="heading">Discover</div>
+        <ul class="sidebar-links" id="topicList">
+          <li data-topic="Technology"># Technology</li>
+          <li data-topic="Lifestyle"># Lifestyle</li>
+          <li data-topic="Education"># Education</li>
+          <li data-topic="Entertainment"># Entertainment</li>
+          <li data-topic="Science"># Science</li>
+        </ul>
+      </aside>
+
+      <!-- Main content -->
+      <main class="home-wrap">
+        <!-- HOME TAB -->
+        <div id="panelHome" class="tab-panel active">
+          <div class="post-form-card">
+            <div class="post-header">
+              <div class="title">Share your thoughts</div>
+              <div class="hint" style="color:var(--muted);font-size:.9rem;">Max 120 title / 2000 body</div>
+            </div>
+            <div class="field">
+              <input id="title" class="post-input" maxlength="120" placeholder="Post title" />
+            </div>
+            <div class="field">
+              <textarea id="body" class="post-input" maxlength="2000" rows="5" placeholder="Write your thoughts..."></textarea>
+            </div>
+            <div class="post-actions">
+              <button type="button" id="postPublic" class="btn primary">Post as Public</button>
+              <button type="button" id="postPrivate" class="btn alt">Post as Private</button>
+              <span id="postSaving" class="hidden"><span class="spinner"></span> Saving…</span>
+            </div>
+          </div>
+
+          <div id="posts">
+            <!-- skeletons while loading -->
+            <div class="post-card" id="skeleton1">
+              <div class="skeleton" style="width:40%"></div>
+              <div class="skeleton" style="width:90%;height:16px"></div>
+              <div class="skeleton" style="width:80%;height:16px"></div>
+              <div class="skeleton" style="width:60%"></div>
+            </div>
+            <div class="post-card" id="skeleton2">
+              <div class="skeleton" style="width:48%"></div>
+              <div class="skeleton" style="width:92%;height:16px"></div>
+              <div class="skeleton" style="width:72%;height:16px"></div>
+              <div class="skeleton" style="width:66%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TRENDING TAB -->
+        <div id="panelTrending" class="tab-panel">
+          <div class="post-card">
+            <div class="title">🔥 Trending is coming soon</div>
+            <div class="body">We’ll show popular public posts here based on likes & recency.</div>
+          </div>
+        </div>
+
+        <!-- PINS TAB -->
+        <div id="panelPins" class="tab-panel">
+          <div class="post-card">
+            <div class="title">📌 Your Pins</div>
+            <div class="body">Pin posts you love and they’ll show up here.</div>
+          </div>
+        </div>
+
+        <!-- CONTACT TAB -->
+        <div id="panelContact" class="tab-panel">
+          <div class="post-card">
+            <div class="title">Contact</div>
+            <div class="body">For support, email <b>help@nad.example</b> (placeholder).</div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </section>
 
   <footer>© 2025 NAD. All rights reserved.</footer>
 
-  <!-- Firebase SDK -->
+  <!-- Toast -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- ============================
+       FIREBASE SDKs
+  ============================= -->
   <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore-compat.js"></script>
 
+  <!-- ============================
+       APP SCRIPT
+  ============================= -->
   <script>
-    // Firebase config
+    // ----------------------------
+    // Typewriter
+    // ----------------------------
+    const slogans=[
+      "Write freely. Share boldly. ✍️",
+      "Stay anonymous, stay real 🔒",
+      "Your thoughts, your rules 🚀",
+      "Blog without boundaries 🌍",
+      "Simple. Fast. Private. ❤️"
+    ];
+    let si=0,sj=0,del=false;
+    function typeEffect(){
+      const el=document.getElementById("typewriter");
+      if(!el) return;
+      if(!del && sj<=slogans[si].length) el.textContent=slogans[si].substring(0,sj++);
+      else if(del && sj>=0) el.textContent=slogans[si].substring(0,sj--);
+      if(sj===slogans[si].length){del=true; return setTimeout(typeEffect,1400)}
+      else if(sj<0){del=false; si=(si+1)%slogans.length}
+      setTimeout(typeEffect, del?55:110);
+    }
+    typeEffect();
+
+    // ----------------------------
+    // UI helpers
+    // ----------------------------
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => Array.from(document.querySelectorAll(sel));
+    const toastEl = $("#toast");
+    function toast(msg, type="info"){
+      toastEl.className = "toast show "+type;
+      toastEl.textContent = msg;
+      setTimeout(()=>{ toastEl.classList.remove("show"); }, 1800);
+    }
+
+    // Page flow
+    function enterApp(){
+      $("#hero").style.display="none";
+      $("#loginSection").style.display="flex";
+    }
+    function showTab(sectionId){
+      ["hero","loginSection"].forEach(id=>{
+        const el=document.getElementById(id);
+        if(el) el.style.display="none";
+      });
+      const tgt=document.getElementById(sectionId);
+      if(tgt) tgt.style.display="block";
+    }
+
+    // Choice buttons behavior
+    $("#goSignIn").addEventListener("click",()=>{
+      $("#choiceButtons").style.display="none";
+      $("#typewriter").style.display="none";
+      $("#loginCard").classList.remove("hidden");
+    });
+    $("#goSignUp").addEventListener("click",()=>{
+      $("#choiceButtons").style.display="none";
+      $("#typewriter").style.display="none";
+      $("#signupCard").classList.remove("hidden");
+    });
+    $("#backToChoices1").addEventListener("click",(e)=>{
+      e.preventDefault();
+      $("#loginCard").classList.add("hidden");
+      $("#typewriter").style.display="";
+      $("#choiceButtons").style.display="flex";
+    });
+    $("#backToChoices2").addEventListener("click",(e)=>{
+      e.preventDefault();
+      $("#signupCard").classList.add("hidden");
+      $("#typewriter").style.display="";
+      $("#choiceButtons").style.display="flex";
+    });
+
+    // ----------------------------
+    // Firebase init
+    // ----------------------------
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      projectId: "YOUR_PROJECT",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyASd_oY4JU2OHs3OdjW8BGY9Q3Ye9oy02o",
+      authDomain: "nad-app-7df24.firebaseapp.com",
+      projectId: "nad-app-7df24",
+      storageBucket: "nad-app-7df24.firebasestorage.app",
+      messagingSenderId: "1004997533632",
+      appId: "1:1004997533632:web:9efc64df6b03c719aab225",
+      measurementId: "G-LE5FGDYWTD"
     };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    // Show login after "Get Started"
-    function enterApp() {
-      document.getElementById("hero").style.display = "none";
-      document.getElementById("loginSection").style.display = "flex";
-    }
-
-    // Switch tabs
-    function showTab(sectionId) {
-      ["hero","loginSection","postsSection"].forEach(id=>{
-        document.getElementById(id).style.display="none";
-      });
-      document.getElementById(sectionId).style.display="block";
-
-      document.getElementById("homeTab").classList.remove("active-tab");
-      document.getElementById("postsTab").classList.remove("active-tab");
-      if(sectionId==="hero"){document.getElementById("homeTab").classList.add("active-tab");}
-      if(sectionId==="postsSection"){document.getElementById("postsTab").classList.add("active-tab");}
-    }
-
-    function showLogin(){ document.getElementById("authChoiceCard").classList.add("hidden"); document.getElementById("loginCard").classList.remove("hidden"); }
-    function showSignup(){ document.getElementById("authChoiceCard").classList.add("hidden"); document.getElementById("signupCard").classList.remove("hidden"); }
-
-    // Typewriter effect
-    const lines = ["✨ Don’t be sad, just use NAD 🌈","📝 Write freely, stay anonymous 🕊️","💭 Your thoughts, your safe space 🔒","🚀 Blogging reborn for Gen Z 🔥"];
-    let lineIndex=0, charIndex=0, isDeleting=false;
-    const speed=70, delayBetween=1500;
-    function typeWriter(){
-      const currentLine=lines[lineIndex]; const display=document.getElementById("typewriter");
-      if(!display) return;
-      if(!isDeleting){ display.textContent=currentLine.substring(0,charIndex++); if(charIndex>currentLine.length){ isDeleting=true; setTimeout(typeWriter,delayBetween); return; } }
-      else{ display.textContent=currentLine.substring(0,charIndex--); if(charIndex<0){ isDeleting=false; lineIndex=(lineIndex+1)%lines.length; } }
-      setTimeout(typeWriter,speed);
-    }
-    window.onload=typeWriter;
+    const db   = firebase.firestore();
 
     // Providers
-    const googleProvider=new firebase.auth.GoogleAuthProvider();
-    const appleProvider=new firebase.auth.OAuthProvider('apple.com');
-    document.getElementById("googleLogin").onclick=()=>auth.signInWithPopup(googleProvider);
-    document.getElementById("googleSignup").onclick=()=>auth.signInWithPopup(googleProvider);
-    document.getElementById("appleLogin").onclick=()=>auth.signInWithPopup(appleProvider);
-    document.getElementById("appleSignup").onclick=()=>auth.signInWithPopup(appleProvider);
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
+    const appleProvider  = new firebase.auth.OAuthProvider('apple.com');
 
-    // Email login
-    document.getElementById("loginForm").onsubmit=async e=>{
-      e.preventDefault();
-      try{await auth.signInWithEmailAndPassword(
-        document.getElementById("loginEmail").value,
-        document.getElementById("loginPassword").value
-      );}catch(err){alert(err.message);}
-    };
-    // Email signup
-    document.getElementById("signupForm").onsubmit=async e=>{
-      e.preventDefault();
+    // Social buttons
+    $("#googleLogin").onclick  = ()=> auth.signInWithPopup(googleProvider).catch(e=>toast(e.message,"warn"));
+    $("#googleSignup").onclick = ()=> auth.signInWithPopup(googleProvider).catch(e=>toast(e.message,"warn"));
+    $("#appleLogin").onclick   = ()=> auth.signInWithPopup(appleProvider).catch(e=>toast(e.message,"warn"));
+    $("#appleSignup").onclick  = ()=> auth.signInWithPopup(appleProvider).catch(e=>toast(e.message,"warn"));
+
+    // Email login / signup
+    $("#loginSubmit").onclick = async ()=>{
+      const email=$("#loginEmail").value.trim();
+      const pass =$("#loginPassword").value.trim();
+      if(!email || !pass) return toast("Enter email & password","warn");
       try{
-        const res=await auth.createUserWithEmailAndPassword(
-          document.getElementById("signupEmail").value,
-          document.getElementById("signupPassword").value
-        );
+        await auth.signInWithEmailAndPassword(email,pass);
+      }catch(err){
+        toast(err.message,"warn");
+      }
+    };
+
+    $("#signupSubmit").onclick = async ()=>{
+      const email=$("#signupEmail").value.trim();
+      const pass =$("#signupPassword").value.trim();
+      if(!email || !pass) return toast("Enter email & password","warn");
+      try{
+        const res = await auth.createUserWithEmailAndPassword(email,pass);
         await res.user.sendEmailVerification();
-        alert("Verification email sent!");
-      }catch(err){alert(err.message);}
+        toast("Verification email sent","success");
+        // Show simple checked state:
+        $("#signupCard").innerHTML = `
+          <h3>You're almost there ✅</h3>
+          <p class="meta">We sent a verification link to <b>${res.user.email}</b>. Verify, then sign in.</p>
+          <div class="actions">
+            <button id="resendVerification" class="btn ghost" type="button">Resend Email</button>
+            <a href="#" id="backToChoicesDone" class="muted-link">Back</a>
+          </div>
+        `;
+        // Re-bind buttons in the new innerHTML
+        $("#resendVerification").onclick = async ()=>{
+          if(res.user && !res.user.emailVerified){
+            await res.user.sendEmailVerification();
+            toast("Verification re-sent","success");
+          }
+        };
+        $("#backToChoicesDone").onclick = (e)=>{
+          e.preventDefault();
+          $("#typewriter").style.display="";
+          $("#choiceButtons").style.display="flex";
+          // swap back card content? keep simple: reload section
+          location.reload();
+        };
+      }catch(err){
+        toast(err.message,"warn");
+      }
     };
 
-    // Resend verification
-    document.getElementById("resendVerification").onclick=async ()=>{
-      const user=auth.currentUser;
-      if(user&&!user.emailVerified){ await user.sendEmailVerification(); alert("Verification email resent!"); }
-    };
-
-    // Auth state
-    auth.onAuthStateChanged(user=>{
-      const navbar=document.querySelector(".navbar"); const logoutBtn=document.getElementById("logoutBtn");
-      if(user){
-        if(!user.emailVerified&&user.providerData[0]?.providerId==="password"){ alert("Please verify email first."); auth.signOut(); return; }
-        document.getElementById("loginSection").style.display="none";
-        document.getElementById("hero").style.display="block";
-        document.getElementById("postsSection").style.display="block";
-        navbar.style.display="flex"; logoutBtn.classList.remove("hidden");
-        showTab("postsSection");
+    // Resend verification from login card
+    $("#resendVerification").onclick = async ()=>{
+      const user = auth.currentUser;
+      if(user && !user.emailVerified){
+        await user.sendEmailVerification();
+        toast("Verification re-sent","success");
       }else{
-        document.getElementById("hero").style.display="block";
-        document.getElementById("loginSection").style.display="none";
-        document.getElementById("postsSection").style.display="none";
-        navbar.style.display="none"; logoutBtn.classList.add("hidden");
+        toast("Login first or already verified","info");
+      }
+    };
+
+    // ----------------------------
+    // Auth state flow
+    // ----------------------------
+    auth.onAuthStateChanged(async (user)=>{
+      const postsSec = $("#panelHome"); // container where posts live
+      const topNav   = $("#topNav");
+      if(user){
+        // If email/password user & not verified => sign out
+        const pwdProvider = user.providerData[0]?.providerId === "password";
+        if(pwdProvider && !user.emailVerified){
+          toast("Please verify your email first","warn");
+          await auth.signOut(); return;
+        }
+
+        // Show app
+        $("#loginSection").style.display="none";
+        $("#hero").style.display="none";
+        $("#homePage").style.display="block";
+        topNav.style.display="none"; // keep the dashboard header only
+
+        // Avatar initial
+        $("#avatar").textContent = (user.email?.[0] || "A").toUpperCase();
+
+        // Load posts stream
+        loadPosts();
+      } else {
+        // Back to hero
+        $("#hero").style.display="block";
+        $("#loginSection").style.display="none";
+        $("#homePage").style.display="none";
+        topNav.style.display="none";
       }
     });
-    document.getElementById("logoutBtn").onclick=()=>auth.signOut();
 
-    // Posts
-    document.getElementById("postForm").onsubmit=async e=>{
-      e.preventDefault();
-      const title=document.getElementById("title").value.trim();
-      const body=document.getElementById("body").value.trim();
-      if(!title||!body) return;
-      await db.collection("posts").add({
-        title,body,createdAt:firebase.firestore.FieldValue.serverTimestamp()
-      });
-      document.getElementById("title").value=""; document.getElementById("body").value="";
+    // Hard logout
+    $("#hardLogout").onclick = async ()=>{
+      await auth.signOut();
+      toast("Logged out","info");
+      location.reload();
     };
-    db.collection("posts").orderBy("createdAt","desc").limit(20).onSnapshot(snap=>{
-      const postsEl=document.getElementById("posts"); postsEl.innerHTML="";
-      if(snap.empty){postsEl.innerHTML="<p>No posts yet</p>";return;}
-      snap.forEach(doc=>{
-        const d=doc.data();
-        postsEl.innerHTML+=`
-          <div class="post-card">
-            <div class="title">${d.title}</div>
-            <div class="body">${d.body}</div>
-            <div class="post-meta">${d.createdAt?.toDate().toLocaleString()||"just now"}</div>
-          </div>`;
+
+    // ----------------------------
+    // Posts (Firestore)
+    // ----------------------------
+    let unsubscribePosts=null;
+    function clearSkeleton(){
+      const s1=$("#skeleton1"), s2=$("#skeleton2");
+      if(s1) s1.remove(); if(s2) s2.remove();
+    }
+    function renderPost(doc){
+      const d = doc.data();
+      const card = document.createElement("div");
+      card.className="post-card";
+      card.innerHTML = `
+        <div class="title">${escapeHtml(d.title || "")}</div>
+        <div class="body">${escapeHtml(d.body || "")}</div>
+        <div class="post-meta">${d.createdAt?.toDate?.().toLocaleString?.() || "just now"} • ${d.public ? "Public" : "Private"}</div>
+      `;
+      return card;
+    }
+    function escapeHtml(str){
+      return String(str).replace(/[&<>"']/g, s=>({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+      }[s]));
+    }
+
+    async function addPost(isPublic){
+      const title=$("#title").value.trim();
+      const body =$("#body").value.trim();
+      if(!title || !body) return toast("Write a title & body","warn");
+      const user=auth.currentUser;
+      if(!user) return toast("Login first","warn");
+      try{
+        $("#postSaving").classList.remove("hidden");
+        await db.collection("posts").add({
+          title, body, public:isPublic, uid:user.uid,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        $("#title").value=""; $("#body").value="";
+        toast("Posted","success");
+      }catch(e){
+        toast(e.message,"warn");
+      }finally{
+        $("#postSaving").classList.add("hidden");
+      }
+    }
+    $("#postPublic").onclick = ()=>addPost(true);
+    $("#postPrivate").onclick= ()=>addPost(false);
+
+    function loadPosts(){
+      if(unsubscribePosts) unsubscribePosts();
+      const postsEl=$("#posts");
+      postsEl.innerHTML = ""; // reset before attaching snapshot (skeletons were in DOM first render)
+      // listen newest first
+      unsubscribePosts = db.collection("posts").orderBy("createdAt","desc").limit(40)
+        .onSnapshot(snap=>{
+          postsEl.innerHTML="";
+          if(snap.empty){
+            postsEl.innerHTML=`<div class="post-card"><div class="body">No posts yet.</div></div>`;
+            return;
+          }
+          clearSkeleton();
+          snap.forEach(doc=>{
+            postsEl.appendChild(renderPost(doc));
+          });
+        }, err=>{
+          toast(err.message,"warn");
+        });
+    }
+
+    // ----------------------------
+    // Tabs + search
+    // ----------------------------
+    const tabButtons = [
+      {btn:"#tabHome", panel:"#panelHome"},
+      {btn:"#tabTrending", panel:"#panelTrending"},
+      {btn:"#tabPins", panel:"#panelPins"},
+      {btn:"#tabContact", panel:"#panelContact"},
+    ];
+    tabButtons.forEach(({btn,panel})=>{
+      $(btn).addEventListener("click",()=>{
+        // set active link
+        $$(".dash-link").forEach(b=>b.classList.remove("active"));
+        $(btn).classList.add("active");
+        // panels
+        $$(".tab-panel").forEach(p=>p.classList.remove("active"));
+        $(panel).classList.add("active");
+      });
+    });
+
+    // Client-side filter (simple) on titles by searchInput
+    $("#searchInput").addEventListener("input", (e)=>{
+      const q = e.target.value.toLowerCase();
+      const cards = $$("#posts .post-card");
+      cards.forEach(c=>{
+        const title = (c.querySelector(".title")?.textContent || "").toLowerCase();
+        const body  = (c.querySelector(".body")?.textContent  || "").toLowerCase();
+        c.style.display = (title.includes(q) || body.includes(q)) ? "" : "none";
+      });
+    });
+
+    // Topic filter (mock: just apply hashtag as search)
+    $("#topicList").addEventListener("click",(e)=>{
+      const li = e.target.closest("li[data-topic]");
+      if(!li) return;
+      $("#searchInput").value = li.dataset.topic;
+      const inputEvent = new Event("input");
+      $("#searchInput").dispatchEvent(inputEvent);
+      toast(`Filtering by ${li.dataset.topic}`,"info");
+    });
+
+    // Topic quick search
+    $("#topicSearch").addEventListener("input",(e)=>{
+      const q=e.target.value.toLowerCase();
+      $$("#topicList li").forEach(li=>{
+        li.style.display = li.dataset.topic.toLowerCase().includes(q) ? "" : "none";
       });
     });
   </script>
