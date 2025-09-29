@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gmail UI Clone</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind for Inter font -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'gmail-blue': '#1a73e8',
+                        'gmail-red': '#ea4335',
+                        'gmail-grey': '#f1f3f4',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for a cleaner look */
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background-color: #c4c4c4;
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        /* Active sidebar link style */
+        .sidebar-link.active {
+            background-color: #fce8e6;
+            color: #d93025; /* Gmail red for active text */
+            font-weight: 600;
+        }
+
+        /* Custom shadow for the compose button */
+        .compose-shadow {
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
+        }
+    </style>
+</head>
+<body class="bg-white font-sans text-gray-800 h-screen overflow-hidden flex flex-col">
+
+    <!-- Header (Top Bar) -->
+    <header class="h-16 flex items-center justify-between px-4 lg:px-6 border-b border-gray-200 sticky top-0 bg-white z-10">
+        <div class="flex items-center space-x-4">
+            <!-- Menu Icon (Mobile toggle) -->
+            <button id="menu-button" class="lg:hidden p-2 text-gray-500 hover:bg-gray-100 rounded-full transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+            <!-- Gmail Logo/Title -->
+            <div class="flex items-center space-x-1">
+                <span class="text-2xl font-bold" style="color:#ea4335;">G</span>
+                <span class="text-2xl font-bold" style="color:#f9bc05;">m</span>
+                <span class="text-2xl font-bold" style="color:#4285f4;">a</span>
+                <span class="text-2xl font-bold" style="color:#34a853;">i</span>
+                <span class="text-2xl font-bold" style="color:#ea4335;">l</span>
+            </div>
+        </div>
+
+        <!-- Search Bar (Desktop/Tablet) -->
+        <div class="hidden md:flex flex-grow max-w-2xl mx-auto">
+            <input type="text" placeholder="Search mail" class="w-full bg-gmail-grey py-3 px-6 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gmail-blue transition">
+        </div>
+
+        <!-- User/Settings Icons -->
+        <div class="flex items-center space-x-4">
+            <button class="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition hidden md:block" title="Settings">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </button>
+            <div class="w-8 h-8 rounded-full bg-gmail-red flex items-center justify-center text-white font-medium text-sm cursor-pointer" title="User Account">
+                K
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <div class="flex flex-grow overflow-hidden">
+        
+        <!-- Sidebar -->
+        <nav id="sidebar" class="w-64 flex-shrink-0 bg-white border-r border-gray-200 p-4 transition-transform duration-300 transform -translate-x-full lg:translate-x-0 absolute lg:relative z-20 h-full overflow-y-auto custom-scroll">
+            
+            <!-- Compose Button -->
+            <button id="compose-button" class="flex items-center space-x-4 bg-white hover:bg-gray-100 p-4 rounded-xl mb-6 compose-shadow transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gmail-red" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                <span class="text-sm font-medium">Compose</span>
+            </button>
+
+            <!-- Navigation Links -->
+            <ul class="space-y-1">
+                <li>
+                    <a href="#" class="sidebar-link active flex items-center p-3 rounded-full text-sm space-x-4 hover:bg-gray-100 transition" onclick="showView('inbox')">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        <span>Inbox</span>
+                        <span class="ml-auto text-xs font-semibold text-gray-500">3</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link flex items-center p-3 rounded-full text-sm space-x-4 hover:bg-gray-100 transition" onclick="showView('sent')">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                        </svg>
+                        <span>Sent</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link flex items-center p-3 rounded-full text-sm space-x-4 hover:bg-gray-100 transition" onclick="showView('drafts')">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        <span>Drafts</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="sidebar-link flex items-center p-3 rounded-full text-sm space-x-4 hover:bg-gray-100 transition" onclick="showView('spam')">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        <span>Spam</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Workspace (Inbox List & Reading/Compose Pane) -->
+        <main class="flex-grow overflow-hidden flex" id="main-workspace">
+            
+            <!-- Inbox List (Visible on all sizes, scrolls) -->
+            <div id="inbox-list" class="w-full lg:w-96 flex-shrink-0 border-r border-gray-200 overflow-y-auto custom-scroll transition-all duration-300">
+                <!-- Tabs -->
+                <div class="sticky top-0 bg-white border-b border-gray-200 flex text-center text-sm font-medium z-10">
+                    <button class="w-1/3 py-3 border-b-2 border-gmail-blue text-gmail-blue">Primary</button>
+                    <button class="w-1/3 py-3 text-gray-500 hover:text-gray-700">Social</button>
+                    <button class="w-1/3 py-3 text-gray-500 hover:text-gray-700">Promotions</button>
+                </div>
+                
+                <!-- Email List Items will be injected here -->
+                <div id="email-list-container">
+                    <!-- Email Items -->
+                </div>
+            </div>
+
+            <!-- Reading/Compose Pane -->
+            <div id="content-pane" class="flex-grow bg-white overflow-y-auto custom-scroll hidden lg:block p-6 transition-all duration-300">
+                <!-- Default Content -->
+                <div id="default-view" class="h-full flex flex-col items-center justify-center text-gray-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 4v-4z" />
+                    </svg>
+                    <p class="text-lg font-medium">Select an email to read</p>
+                    <p class="text-sm">Or click 'Compose' to write a new one.</p>
+                </div>
+
+                <!-- Email Reading View -->
+                <div id="reading-view" class="hidden">
+                    <h1 id="email-subject" class="text-3xl font-light mb-4 text-gray-900"></h1>
+                    
+                    <div class="flex items-center space-x-3 mb-6 border-b pb-4">
+                        <div id="sender-avatar" class="w-10 h-10 rounded-full bg-gmail-blue flex items-center justify-center text-white font-medium text-sm"></div>
+                        <div>
+                            <p class="font-medium text-sm text-gray-900" id="sender-name"></p>
+                            <p class="text-xs text-gray-500">to me <span id="email-date" class="ml-2"></span></p>
+                        </div>
+                    </div>
+
+                    <div id="email-body" class="text-base leading-relaxed">
+                        <!-- Email content here -->
+                    </div>
+                </div>
+
+                <!-- Compose Email View -->
+                <div id="compose-view" class="hidden h-full flex flex-col">
+                    <h2 class="text-2xl font-light mb-6 text-gray-900 border-b pb-4">New Message</h2>
+                    <form id="compose-form" class="flex flex-col flex-grow">
+                        
+                        <div class="mb-4">
+                            <input type="email" id="compose-to" placeholder="Recipients" required class="w-full p-3 border-b focus:border-gmail-blue outline-none text-sm transition">
+                        </div>
+                        <div class="mb-4">
+                            <input type="text" id="compose-subject" placeholder="Subject" required class="w-full p-3 border-b focus:border-gmail-blue outline-none text-sm transition">
+                        </div>
+                        
+                        <div class="flex-grow mb-6">
+                            <textarea id="compose-body" placeholder="Write your message here..." class="w-full h-full p-4 border rounded-lg focus:border-gmail-blue outline-none text-sm transition resize-none"></textarea>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button type="submit" class="px-6 py-2 bg-gmail-blue text-white rounded-full hover:bg-blue-600 transition font-medium">
+                                Send
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+            </div>
+            
+            <!-- Mobile Back Button for Reading/Compose View -->
+            <button id="back-button" class="absolute top-4 left-4 p-2 bg-white rounded-full shadow-lg z-30 lg:hidden hidden" onclick="closeContentPane()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+            </button>
+        </main>
+    </div>
+
+    <!-- Message Box (Instead of alert()) -->
+    <div id="message-box" class="fixed bottom-4 right-4 bg-gray-900 text-white p-4 rounded-lg shadow-xl hidden transition-opacity duration-300 opacity-0">
+        <!-- Message content -->
+    </div>
+
+
+    <script>
+        // --- Mock Data ---
+        const MOCK_EMAILS = [
+            {
+                id: 1,
+                sender: "Design Team",
+                email: "design@example.com",
+                subject: "Q3 Design Review Complete 🎨",
+                body: "Hi team, the final assets for the Q3 refresh are now live on the shared drive. Please take a look and provide feedback by end of day Tuesday. We focused heavily on mobile responsiveness this quarter. Thanks!",
+                time: "10:30 AM",
+                unread: true
+            },
+            {
+                id: 2,
+                sender: "Sarah Connor (HR)",
+                email: "sarah.connor@corp.com",
+                subject: "Your Annual Leave Request Status",
+                body: "Hello! Your leave request for October 15-20 has been approved. Enjoy your time off! Let me know if you have any questions about the remaining balance of your PTO.",
+                time: "Yesterday",
+                unread: false
+            },
+            {
+                id: 3,
+                sender: "Weekly Tech Newsletter",
+                email: "newsletter@tech.io",
+                subject: "The Future of AI and Front-end Development",
+                body: "This week's edition covers the latest trends in generative UI and how new LLMs are changing the development landscape. We also include a deep dive on React Server Components.",
+                time: "Sep 25",
+                unread: true
+            },
+            {
+                id: 4,
+                sender: "LinkedIn",
+                email: "notifications@linkedin.com",
+                subject: "5 new jobs matching your profile",
+                body: "Based on your recent activity, we found 5 new roles in 'Software Architect' you might be interested in. Click here to review them.",
+                time: "Sep 24",
+                unread: false
+            },
+        ];
+
+        // --- DOM Elements ---
+        const sidebar = document.getElementById('sidebar');
+        const menuButton = document.getElementById('menu-button');
+        const emailListContainer = document.getElementById('email-list-container');
+        const contentPane = document.getElementById('content-pane');
+        const defaultView = document.getElementById('default-view');
+        const readingView = document.getElementById('reading-view');
+        const composeView = document.getElementById('compose-view');
+        const composeButton = document.getElementById('compose-button');
+        const composeForm = document.getElementById('compose-form');
+        const backButton = document.getElementById('back-button');
+        const messageBox = document.getElementById('message-box');
+        
+        // --- State Management ---
+        let currentView = 'inbox'; // 'inbox', 'compose', or 'read'
+
+        // --- Utility Functions ---
+        
+        /** Shows a temporary message in a custom box instead of using alert() */
+        function showMessage(text) {
+            messageBox.textContent = text;
+            messageBox.classList.remove('hidden');
+            setTimeout(() => {
+                messageBox.classList.add('opacity-100');
+            }, 10);
+            
+            setTimeout(() => {
+                messageBox.classList.remove('opacity-100');
+                setTimeout(() => {
+                    messageBox.classList.add('hidden');
+                }, 300);
+            }, 3000);
+        }
+
+        /** Renders a single email item in the list */
+        function createEmailItem(email) {
+            const isUnreadClass = email.unread ? 'font-bold text-gray-900' : 'font-normal text-gray-700';
+
+            const item = document.createElement('div');
+            item.className = `flex items-center space-x-4 p-4 border-b hover:shadow-md cursor-pointer transition bg-white ${email.unread ? 'hover:bg-gmail-grey' : 'hover:bg-gray-50'}`;
+            item.dataset.emailId = email.id;
+            item.onclick = () => openEmail(email.id);
+
+            // Checkbox placeholder
+            item.innerHTML = `
+                <input type="checkbox" class="w-4 h-4 text-gmail-blue border-gray-300 rounded focus:ring-gmail-blue">
+                <!-- Star icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 hover:text-yellow-500 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.228M13.454 21.056l-3.21-6.726L3.93 9.774l7.118-.949L12 2l.953 6.825 7.118.949-6.315 4.556-3.21 6.726z" />
+                </svg>
+                
+                <!-- Sender Name -->
+                <p class="w-24 flex-shrink-0 text-sm truncate ${isUnreadClass}">${email.sender}</p>
+
+                <!-- Subject and Snippet -->
+                <div class="flex-grow overflow-hidden">
+                    <p class="text-sm truncate ${isUnreadClass}">${email.subject} - <span class="text-gray-500 font-normal">${email.body.substring(0, 50)}...</span></p>
+                </div>
+
+                <!-- Time -->
+                <p class="w-16 flex-shrink-0 text-right text-xs text-gray-500">${email.time}</p>
+            `;
+            return item;
+        }
+
+        /** Renders the full list of emails */
+        function renderEmailList() {
+            emailListContainer.innerHTML = '';
+            MOCK_EMAILS.forEach(email => {
+                emailListContainer.appendChild(createEmailItem(email));
+            });
+        }
+
+        // --- Core View Control ---
+
+        /** Switches the content pane between reading, compose, and default views */
+        function switchContentPane(mode) {
+            defaultView.classList.add('hidden');
+            readingView.classList.add('hidden');
+            composeView.classList.add('hidden');
+            
+            if (mode === 'read') {
+                readingView.classList.remove('hidden');
+            } else if (mode === 'compose') {
+                composeView.classList.remove('hidden');
+            } else {
+                defaultView.classList.remove('hidden');
+            }
+
+            currentView = mode;
+        }
+
+        /** Main function to switch the entire application view (Sidebar links) */
+        function showView(viewId) {
+            // Only 'inbox' and 'compose' are currently implemented views on the sidebar
+            if (viewId === 'inbox') {
+                switchContentPane('default');
+                // Ensure email list is visible
+                document.getElementById('inbox-list').classList.remove('hidden');
+            } else if (viewId === 'compose') {
+                // Clicking 'Compose' bypasses the default view
+                switchContentPane('compose');
+            } else {
+                // Placeholder for other folders (Sent, Drafts)
+                showMessage(`Viewing ${viewId.charAt(0).toUpperCase() + viewId.slice(1)} folder. (Simulation only)`);
+                switchContentPane('default');
+            }
+
+            // Update active sidebar link state
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            // Find the link corresponding to the viewId and mark it active
+            if (viewId !== 'compose') {
+                document.querySelector(`.sidebar-link[onclick*="${viewId}"]`).classList.add('active');
+            }
+            
+            // Mobile specific logic
+            if (window.innerWidth < 1024) {
+                // If it's a content view (read or compose), hide the list and show the back button
+                if (viewId === 'compose' || currentView === 'read') {
+                    document.getElementById('inbox-list').classList.add('hidden');
+                    contentPane.classList.remove('hidden');
+                    backButton.classList.remove('hidden');
+                } else {
+                    document.getElementById('inbox-list').classList.remove('hidden');
+                    contentPane.classList.add('hidden');
+                    backButton.classList.add('hidden');
+                }
+                // Always hide the sidebar on mobile after clicking a link
+                sidebar.classList.add('-translate-x-full');
+            }
+        }
+
+        /** Opens the email reading view */
+        function openEmail(id) {
+            const email = MOCK_EMAILS.find(e => e.id === id);
+            if (!email) return;
+
+            // Mark as read (for simulation)
+            email.unread = false;
+            // Rerender list to update bold status
+            renderEmailList(); 
+
+            // Update reading view content
+            document.getElementById('email-subject').textContent = email.subject;
+            document.getElementById('sender-avatar').textContent = email.sender.charAt(0);
+            document.getElementById('sender-name').textContent = email.sender;
+            document.getElementById('email-date').textContent = email.time;
+            document.getElementById('email-body').innerHTML = 
+                email.body.replace(/\n/g, '<br>') + 
+                `<br><br><div class="text-xs text-gray-400">-- This is a simulated email body --</div>`;
+
+            switchContentPane('read');
+            
+            // Mobile specific logic: show content pane and hide list
+            if (window.innerWidth < 1024) {
+                document.getElementById('inbox-list').classList.add('hidden');
+                contentPane.classList.remove('hidden');
+                backButton.classList.remove('hidden');
+            }
+        }
+
+        /** Handles closing the reading/compose pane on mobile */
+        function closeContentPane() {
+            switchContentPane('default'); // Go back to the default 'select an email' message
+            document.getElementById('inbox-list').classList.remove('hidden');
+            contentPane.classList.add('hidden');
+            backButton.classList.add('hidden');
+        }
+
+        // --- Event Listeners ---
+
+        // Handle Compose Button click
+        composeButton.addEventListener('click', () => {
+            showView('compose');
+        });
+
+        // Handle Compose Form submission (Simulated send)
+        composeForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const to = document.getElementById('compose-to').value;
+            const subject = document.getElementById('compose-subject').value;
+            
+            // Clear the form
+            composeForm.reset();
+            
+            showMessage(`Message sent to ${to} with subject: "${subject}"`);
+            
+            // Return to Inbox view after sending
+            showView('inbox');
+        });
+
+        // Handle Mobile Menu Toggle
+        menuButton.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Initial render on load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderEmailList();
+        });
+
+    </script>
+</body>
+</html>
