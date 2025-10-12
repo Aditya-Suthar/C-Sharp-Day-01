@@ -2,7 +2,8 @@
     "files.associations": {
         "QUESTION G2.C": "cpp",
         "QUESTION G.C": "cpp",
-        "BLABLABLA.C": "cpp"
+        "BLABLABLA.C": "cpp",
+        "FUCNTION2.C": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
