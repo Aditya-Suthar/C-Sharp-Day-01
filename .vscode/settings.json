@@ -3,7 +3,8 @@
         "QUESTION G2.C": "cpp",
         "QUESTION G.C": "cpp",
         "BLABLABLA.C": "cpp",
-        "FUCNTION2.C": "cpp"
+        "FUCNTION2.C": "cpp",
+        "stdio.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
