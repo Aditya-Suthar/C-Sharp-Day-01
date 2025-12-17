@@ -13,7 +13,7 @@ int main ()
         cout << "even number";
     }
 
-    else 
+    if (n%2!=0)
     {
         cout << "odd number";
     }
