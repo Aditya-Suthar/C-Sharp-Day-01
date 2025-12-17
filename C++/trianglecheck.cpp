@@ -23,11 +23,10 @@ int main ()
         cout << "Trinalge is possible";
     }
 
-    else
+    else 
     {
-        cout << "Triangle is not possible";
+        cout << "Triangle not possible";
     }
-    
 }
 
 
