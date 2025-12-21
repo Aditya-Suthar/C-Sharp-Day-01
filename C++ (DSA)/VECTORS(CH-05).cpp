@@ -1,3 +1,5 @@
+// usage of front and back function inside the vector statemte
+
 #include <iostream>
 #include <vector>
 
