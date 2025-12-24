@@ -2,11 +2,12 @@
 #include <vector>
 
 using namespace std;
-
 int main ()
 
 {
-    /*array defining*/
+    /* array defining */
+
+    
     int n = 5;
     int arr[5] = {1,2,3,4,5};
 
