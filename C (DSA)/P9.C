@@ -12,7 +12,7 @@ int main ()
 
     for (int i=0;i<n;i++)
     {
-        printf ("Enter the a[%d]:-\n",i);
+        printf ("Enter the a[%d]:-",i);
         scanf ("%d",&arr[i]);
     }
 
