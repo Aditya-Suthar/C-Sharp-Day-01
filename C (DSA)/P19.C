@@ -1,54 +1,41 @@
 #include <stdio.h>
 #include <string.h>
 
-int main ()
-
+int main()
 {
-    char str[100],substr[100];
+    char str[100], substr[100];
     int found = 0;
 
-    printf("Enter the string here:");
-    scanf (" %[^\n]",str);
+    printf("Enter the string here: ");
+    scanf(" %[^\n]", str);
 
-    printf("Enter the sub string here:");
-    scanf (" %[^\n]",substr);
+    printf("Enter the sub string here: ");
+    scanf(" %[^\n]", substr);
 
     int len1 = strlen(str);
     int len2 = strlen(substr);
 
-    
-    int i = 0;
-    int j = 0;
-
-    for (i = 0 ; i<= len1-len2 ;i++)
+    for (int i = 0; i <= len1 - len2; i++)
     {
-        for (j = 0; j<len2 ;j++)
+        found = 1;   // assume match at this position
+
+        for (int j = 0; j < len2; j++)
         {
-            if (str[i+j] != substr[j])
+            if (str[i + j] != substr[j])
             {
+                found = 0;   // mismatch → not a match
                 break;
             }
         }
 
-        if (j == len2)
-
-            {
-                found = 1;
-                break;
-            }
-        
+        if (found == 1)
+            break;  // substring found
     }
-    
-   if (found) 
-   {
+
+    if (found == 1)
         printf("Substring Found");
-   }
-
-   else
-   {
+    else
         printf("Substring Not Found");
-   }
 
-   return 0;
-
+    return 0;
 }
