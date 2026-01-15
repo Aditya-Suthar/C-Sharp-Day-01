@@ -86,9 +86,9 @@ void SwitchLS(int arr[],int n,int k,int l)
     int j = 0;
     int temp;
 
-    for (int i=0;i<n;i++)
+    for (i=0;i<n;i++)
     {
-        for (int j=0;j<n;j++)
+        for (j=0;j<n;j++)
         {
             if (arr[i] == l && arr[j] == k)
             {
@@ -107,5 +107,5 @@ void SwitchLS(int arr[],int n,int k,int l)
     }
 
 
-    }
+}
 
