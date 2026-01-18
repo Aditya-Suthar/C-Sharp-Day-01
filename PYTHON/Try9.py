@@ -1,6 +1,19 @@
-#usage of len
+#HCF/GCD of a number
 
-students = ["Hermione","Harry","Ron"]
+def main ():
+    x = GetNumber()
+    y = GetNumber()
+    max = HCF(x,y)
+    print (max)
 
-for i in range (len(students)): 
-    print (i+1,students[i])   
+def GetNumber():
+    a = int(input())
+    return a
+
+def HCF (x,y):
+    if y == 0:
+        return x
+    return HCF(y,x%y)
+
+main()
+
