@@ -1,0 +1,24 @@
+def main ():
+    a = InpNum()
+    b = InpNum()
+
+    m = HCF(a,b)
+    lcm = a*b/m
+
+    print ("LCM IS :",lcm)
+    print ("HCF IS :",m)
+
+def InpNum():
+    n = int (input("Enter the number:-"))
+    return n
+
+def HCF(a,b):
+    if b%a == 0:
+        return a
+    return HCF(b%a,a)
+
+
+main()
+
+
+
