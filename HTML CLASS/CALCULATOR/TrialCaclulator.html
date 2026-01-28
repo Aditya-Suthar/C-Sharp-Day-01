@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Top Tier Calculator</title>
+
+    <style>
+        /* ===== THEME VARIABLES ===== */
+        :root {
+            --bg-main: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+            --calc-bg: rgba(255,255,255,0.12);
+            --display-bg: #ffffff;
+            --display-text: #000;
+            --btn-bg: rgba(255,255,255,0.18);
+            --btn-text: #ffffff;
+            --btn-hover: rgba(255,255,255,0.35);
+            --operator: #ff9500;
+            --equal: #28a745;
+            --clear: #dc3545;
+        }
+
+        body.light {
+            --bg-main: linear-gradient(135deg,#fdfbfb,#ebedee);
+            --calc-bg: #ffffff;
+            --display-bg: #f2f2f2;
+            --display-text: #000;
+            --btn-bg: #e0e0e0;
+            --btn-text: #000;
+            --btn-hover: #cfcfcf;
+        }
+
+        /* ===== PAGE LAYOUT ===== */
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--bg-main);
+            font-family: Arial, sans-serif;
+        }
+
+        .calculator {
+            background: var(--calc-bg);
+            backdrop-filter: blur(18px);
+            padding: 20px;
+            border-radius: 18px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        /* ===== DISPLAY ===== */
+        #display {
+            width: 100%;
+            height: 60px;
+            font-size: 26px;
+            text-align: right;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            background: var(--display-bg);
+            color: var(--display-text);
+        }
+
+        /* ===== BUTTONS ===== */
+        .row {
+            display: flex;
+        }
+
+        button {
+            width: 70px;
+            height: 60px;
+            margin: 5px;
+            font-size: 17px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            background: var(--btn-bg);
+            color: var(--btn-text);
+        }
+
+        button:hover {
+            background: var(--btn-hover);
+        }
+
+        .operator { background: var(--operator); color: #fff; }
+        .equal { background: var(--equal); color: #fff; }
+        .clear { background: var(--clear); color: #fff; }
+
+        .toggle {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="calculator">
+
+    <button class="toggle" onclick="toggleTheme()">🌙 / ☀️</button>
+
+    <input type="text" id="display" readonly>
+
+    <div class="row">
+        <button onclick="func('sin')">sin</button>
+        <button onclick="func('cos')">cos</button>
+        <button onclick="func('tan')">tan</button>
+        <button class="clear" onclick="clearAll()">C</button>
+    </div>
+
+    <div class="row">
+        <button onclick="func('sqrt')">√</button>
+        <button onclick="func('sq')">x²</button>
+        <button onclick="press('%')">%</button>
+        <button class="operator" onclick="press('/')">÷</button>
+    </div>
+
+    <div class="row">
+        <button onclick="press('7')">7</button>
+        <button onclick="press('8')">8</button>
+        <button onclick="press('9')">9</button>
+        <button class="operator" onclick="press('*')">×</button>
+    </div>
+
+    <div class="row">
+        <button onclick="press('4')">4</button>
+        <button onclick="press('5')">5</button>
+        <button onclick="press('6')">6</button>
+        <button class="operator" onclick="press('-')">−</button>
+    </div>
+
+    <div class="row">
+        <button onclick="press('1')">1</button>
+        <button onclick="press('2')">2</button>
+        <button onclick="press('3')">3</button>
+        <button class="operator" onclick="press('+')">+</button>
+    </div>
+
+    <div class="row">
+        <button onclick="press('0')">0</button>
+        <button onclick="press('.')">.</button>
+        <button onclick="backspace()">⌫</button>
+        <button class="equal" onclick="calculate()">=</button>
+    </div>
+
+</div>
+
+<script>
+let expression = "";
+const display = document.getElementById("display");
+
+function press(val) {
+    expression += val;
+    display.value = expression;
+}
+
+function backspace() {
+    expression = expression.slice(0, -1);
+    display.value = expression;
+}
+
+function clearAll() {
+    expression = "";
+    display.value = "";
+}
+
+function func(type) {
+    if (!expression) return;
+    let x = parseFloat(expression);
+    let result = 0;
+
+    if (type === "sin") result = Math.sin(x * Math.PI / 180);
+    if (type === "cos") result = Math.cos(x * Math.PI / 180);
+    if (type === "tan") result = Math.tan(x * Math.PI / 180);
+    if (type === "sqrt") result = Math.sqrt(x);
+    if (type === "sq") result = x * x;
+
+    expression = result.toString();
+    display.value = expression;
+}
+
+function calculate() {
+    try {
+        let safeExpr = expression.replace(/×/g,"*").replace(/÷/g,"/");
+        let result = Function("return " + safeExpr)();
+        expression = result.toString();
+        display.value = expression;
+    } catch {
+        display.value = "Error";
+        expression = "";
+    }
+}
+
+function toggleTheme() {
+    document.body.classList.toggle("light");
+}
+
+/* Keyboard support */
+document.addEventListener("keydown", e => {
+    if (!isNaN(e.key) || "+-*/.%".includes(e.key)) press(e.key);
+    if (e.key === "Enter") calculate();
+    if (e.key === "Backspace") backspace();
+    if (e.key === "Escape") clearAll();
+});
+</script>
+
+</body>
+</html>

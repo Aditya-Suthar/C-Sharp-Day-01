@@ -1,0 +1,95 @@
+body 
+{
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image:url("IMAGEBACKGROUND.png");
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(
+        to bottom,
+        #000000 0%,      /* pure black */
+        #000000 30%,     /* stays black behind logo */
+        #4e4e4e 45%,     /* very subtle dark red */
+        #8b8b8b 60%,     /* light red appears */
+        #b1b1b1 75%,     /* appealing mid red */
+        #ffffff 100%     /* strong red at bottom */
+    );
+}
+
+.bn 
+{
+    display: grid;
+    justify-content: center;
+
+
+    width: 150px;        /* fixed width */
+    height: 50px;        /* fixed height */
+  
+    font-family: "Bitcount Single", system-ui;
+    font-optical-sizing: auto;
+    font-weight: 359;
+    font-style: normal;
+    font-variation-settings:
+    "slnt" 0,
+    "CRSV" 0,
+    "ELSH" 0,
+    "ELXP" 0;
+
+    background-color: #000000;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius : 6px;
+    padding-top: 20px ;
+    padding-right: 0px;
+    padding-left: 0px;
+    padding-bottom: 30px ;
+
+
+} 
+
+.bn:hover{
+
+        font-family: "Bitcount Single", system-ui;
+        font-optical-sizing: auto;
+        font-weight: 359;
+        font-style: normal;
+        font-variation-settings:
+        "slnt" 0,
+        "CRSV" 0,
+        "ELSH" 0,
+        "ELXP" 0;
+
+        background-color: #ffffff;
+        color :#000000;
+        padding-top: 20px ;
+        padding-right: 0px;
+        padding-left: 0px;
+        padding-bottom: 30px ;
+    }
+
+.header {
+    display: flex;
+    align-items: center;
+    padding: 30px 60px;
+}
+
+.nav-right {
+    display: flex;
+    gap: 20px;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.nav-left {
+    display: flex;
+    gap: 20px;
+    flex: 1;
+    justify-content: flex-start;
+}
+
+.logo {
+    height: 160px;
+    width: auto;
+}
