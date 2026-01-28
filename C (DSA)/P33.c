@@ -1,62 +1,73 @@
-// INSETION SORT
-
 #include <stdio.h>
 
-int GetNumber();
-void GetArray(int arr[],int n);
-void InserSort(int arr[],int n);
-void Display(int arr[],int n);
-int main ()
+int inp_n();
 
+void inp_arr(int n,int arr[]);
+
+void SelectSort(int n,int arr[]);
+
+void Display(int n,int arr[]);
+
+int main()
 {
-    int n;
-    n = GetNumber();
-    
-    int arr[n];
+    int n = inp_n(); // Taking input of no. of elements
 
-    GetArray(arr,n);
-    InserSort(arr,n);
+    int arr[n];  // Delcaring the array
 
-    Display(arr,n);
+    inp_arr(n,arr); // Taking input of values of array
+
+
+    SelectSort(n,arr); //Sorting the elements
+
+    Display(n,arr); // Displaying the final results
+
     return 0;
 }
 
-int GetNumber()
+int inp_n()
 {
     int n;
-    printf ("Enter the number of element:-");
+
+    printf ("Enter the number of elements:-");
     scanf ("%d",&n);
+
     return n;
 }
 
-void GetArray(int arr[],int n)
+void inp_arr(int n,int arr[])
 {
     for (int i=0;i<n;i++)
     {
-        printf ("Enter the element no:- [%d]",i);
+        printf ("Enter arr[%d]:- ",i);
         scanf ("%d",&arr[i]);
     }
 }
 
-void InserSort(int arr[],int n)
+void SelectSort(int n,int arr[])
 {
-    int i,j,temp;
+    int i,j,temp,min,pos;
 
-    for (i=1;i<n;i++)
+    for (i=0;i<n-1;i++)
     {
-        temp = arr[i];
-        j = i-1;
-        while ( (j>=0) && (temp < arr[j]) )
+        min = arr[i];
+        pos = i;
+
+        for (j=i+1;j<n;j++)
         {
-            arr[j+1] = arr[j];
-            j--;
+            if (arr[j] < min)
+            {
+                min = arr[j];
+                pos = j;
+            }
         }
 
-        arr[j+1] = temp;
+        temp = arr[pos];
+        arr[pos] = arr[i];
+        arr[i] = temp;
     }
 }
 
-void Display (int arr[],int n)
+void Display(int n,int arr[])
 {
     for (int i=0;i<n;i++)
     {
