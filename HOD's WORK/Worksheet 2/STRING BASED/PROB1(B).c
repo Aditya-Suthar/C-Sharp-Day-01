@@ -22,17 +22,20 @@ int main ()
         ++count[str[i]];
     }
 
-    for (int j=0;j<256;j++)
-    {
-        if (count[j]>0)
-        {
-            int max = count[j];
-            
-            printf ("%c has appeared %d times\n",j,count[j]);
+    int max = 0;
+    char maxChar;
 
-            
+    for (int i=0;i<256;i++)
+    {
+        if (count[i]>max)
+        {
+            max = count[i];
+            maxChar = i;
         }
     }
+
+    printf ("MAXIMUM OCCURENCE IS OF %c:- %d TIMES",maxChar,max);
+
 
     return 0;
 }
