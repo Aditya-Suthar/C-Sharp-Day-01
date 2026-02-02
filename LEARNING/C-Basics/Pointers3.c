@@ -21,4 +21,6 @@ int main ()
     }
 
     printf ("The length of string is:- %d",count);
+
+    return 0;
 }
