@@ -17,7 +17,11 @@ int main (void)
     }
 
     else
-    printf ("Two numbers are same");
+    {
+        printf ("Two numbers are same");
+    }
+
+    return 0;
 
     
 }
