@@ -17,6 +17,8 @@ int main ()
 
     Display(n,arr);
 
+    return 0;
+
 }
 
 int inp_n()
@@ -56,7 +58,6 @@ void SelectSort(int n,int arr[])
             }
         }
 
-        // swap
         temp = arr[k];
         arr[k] = arr[i];
         arr[i] = temp;

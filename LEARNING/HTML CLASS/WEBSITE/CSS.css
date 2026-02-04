@@ -1,19 +1,19 @@
 body 
 {
-    background-size: cover;
+    background-size: cover; 
     background-position: center;
     background-repeat: no-repeat;
     background-image:url("IMAGEBACKGROUND.png");
     margin: 0;
-    min-height: 100vh;
+    min-height: 100vh; /* */
     background: linear-gradient(
         to bottom,
-        #000000 0%,      /* pure black */
-        #000000 30%,     /* stays black behind logo */
-        #4e4e4e 45%,     /* very subtle dark red */
-        #8b8b8b 60%,     /* light red appears */
-        #b1b1b1 75%,     /* appealing mid red */
-        #ffffff 100%     /* strong red at bottom */
+        #000000 0%,      
+        #000000 30%,     
+        #4e4e4e 45%,     
+        #8b8b8b 60%,     
+        #b1b1b1 75%,     
+        #ffffff 100%    
     );
 }
 
