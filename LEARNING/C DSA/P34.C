@@ -4,8 +4,6 @@ int inp_n();
 
 void inp_arr(int n,int arr[]);
 
-void SelectSort(int n,int arr[]);
-
 void Display(int n,int arr[]);
 
 void MergeSort(int arr[],int start,int end);
@@ -65,12 +63,12 @@ void MergeSort(int arr[],int start,int end)
 
 void Merge(int arr[],int start,int mid,int end)
 {
-    int i = start; // start for first sublist
-    int j = mid+1; // start for second sublist
+    int i = start; 
+    int j = mid+1; 
 
     int k = 0;
 
-    int temp[end-start+1]; // a new array where elements will be stored
+    int temp[end-start+1]; 
 
     while (i<=mid && j<= end)
     {
