@@ -7,6 +7,7 @@ void display(int n, int arr[]);
 void quick_sort(int arr[], int low, int high);
 int partition(int arr[], int low, int high);
 
+
 int main()
 {
     int n = inp_n();

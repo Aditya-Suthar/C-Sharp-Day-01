@@ -31,3 +31,14 @@ int main()
     }
 }
 
+int partition (int a[],int beg,int end)
+{
+    int left,right,temp,loc,flag;
+
+    loc = left = beg;
+    right = end;
+
+    flag = 0;
+
+    
+}

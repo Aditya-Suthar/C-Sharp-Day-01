@@ -1,0 +1,1 @@
+q = int(input("Enter the quantity"))
