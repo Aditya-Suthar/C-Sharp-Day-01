@@ -26,6 +26,7 @@ void push (int data)
     if (top == MAX-1)
     {
         printf ("stack overflow");
+        return;
     }
     top = top +1;
     stack_arr[top] = data;
