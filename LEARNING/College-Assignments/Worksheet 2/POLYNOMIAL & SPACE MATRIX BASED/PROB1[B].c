@@ -47,6 +47,6 @@ int fun (int exp[],int coeff[],int n,int x)
     {
         value = value + coeff[i] * power(x,exp[i]);
     }
-
+    
     return value;
 }
