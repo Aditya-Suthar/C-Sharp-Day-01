@@ -33,6 +33,7 @@ def merge(arr,start,mid,end):
         j = j+1
 
     print(temp)
+    
 
 def main():
     n = int(input("Enter the number of elements:- "))

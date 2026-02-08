@@ -47,7 +47,7 @@ int pop ()
         printf ("Underflow Stack");
         return -1;
     }
-    
+
     int value;
     value = stack_arr[top];
     top = top-1;
