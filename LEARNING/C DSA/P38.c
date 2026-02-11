@@ -9,6 +9,7 @@ int stack[MAX];
 int top = -1;
 
 
+int power(int a,int b); // a ki power b
 void push(int data) ;
 int pop() ;
 void inp_arr(char arr[]);
@@ -49,6 +50,12 @@ int main ()
                 case '/':
                     result = val1 / val2;
                     break;
+                
+                case '^':
+                    result = power(val1,val2);
+
+                default:
+                    printf ("Invalid Operator");
             }
             
             push(result);
@@ -94,4 +101,15 @@ int pop()
     value = stack[top];
     top = top-1;
     return value;
+}
+
+int power(int a,int b)  // a ki power b
+{
+    if(b==0)
+    {
+        return 1;
+    }
+
+    return a*power(a,b-1);
+
 }
