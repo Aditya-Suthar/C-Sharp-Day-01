@@ -21,9 +21,9 @@ int main ()
 
     for (int i=0;arr[i] != '\0';i++)   
     {
-        if (isdigit(arr[i])) // for checking if the input is 0-9 in the string
+        if (isdigit(arr[i])) 
         {
-            push(arr[i]-'0'); // pushing the value in stack
+            push(arr[i]-'0'); 
         }
 
         else
@@ -62,7 +62,7 @@ int main ()
         }
     }
 
-    printf ("The final results is :- %d",pop());
+    printf ("The final result is :- %d",pop());
 
 
     return 0;

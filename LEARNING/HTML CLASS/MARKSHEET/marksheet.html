@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Marksheet</title>
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f2f2f2;
+            text-align: center;
+        }
+
+        .container {
+            background-color: white;
+            width: 300px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px gray;
+        }
+
+        input {
+            margin: 5px;
+            padding: 5px;
+            width: 80%;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 8px 15px;
+            cursor: pointer;
+        }
+
+        #result {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Marksheet</h2>
+        <input type="date" id="dob"><br>
+
+
+        <input type="text" id="name" placeholder="Enter Name"><br>
+
+        <input type="number" id="m1" placeholder="Subject 1"><br>
+        <input type="number" id="m2" placeholder="Subject 2"><br>
+        <input type="number" id="m3" placeholder="Subject 3"><br>
+        <input type="number" id="m4" placeholder="Subject 4"><br>
+        <input type="number" id="m5" placeholder="Subject 5"><br>
+
+        <button onclick="calculate()">Generate Result</button>
+
+        <div id="result"></div>
+    </div>
+
+<script>
+function calculate() {
+
+    let name = document.getElementById("name").value;
+    let dob = document.getElementById("dob").value;
+
+    let birthDate = new Date(dob);
+    let today = new Date();
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+
+    if (age<18)
+    {
+        document.getElementById("result").innerHTML =  "You must be 18+";
+        return;
+    }
+    
+
+    let m1 = Number(document.getElementById("m1").value);
+    let m2 = Number(document.getElementById("m2").value);
+    let m3 = Number(document.getElementById("m3").value);
+    let m4 = Number(document.getElementById("m4").value);
+    let m5 = Number(document.getElementById("m5").value);
+
+    let total = m1 + m2 + m3 + m4 + m5;
+    let percentage = total / 5;
+
+    let division;
+
+    if (percentage >= 75)
+        division = "Distinction";
+    else if (percentage >= 60)
+        division = "First Division";
+    else if (percentage >= 50)
+        division = "Second Division";
+    else if (percentage >= 40)
+        division = "Third Division";
+    else
+        division = "Fail";
+
+    document.getElementById("result").innerHTML =
+        "Name: " + name + "<br>" +
+        "Total: " + total + "<br>" +
+        "Percentage: " + percentage.toFixed(2) + "%<br>" +
+        "Division: " + division;
+}
+</script>
+
+</body>
+</html>
